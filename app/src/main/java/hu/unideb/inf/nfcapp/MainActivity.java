@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText textPassword;
     private EditText textUsername;
     private Button loginButton;
+    private Connection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +29,25 @@ public class MainActivity extends AppCompatActivity {
         textUsername = (EditText) findViewById(R.id.textUsername);
         textPassword = (EditText) findViewById(R.id.textPassword);
 
+
     }
 
     @SuppressLint("ShowToast")
     public void loginUser(View view) {
 
-        Repository.LoggedInUser = Repository.Communicator.loginUser();
+        SqlDatabaseCommunicator sqc = new SqlDatabaseCommunicator();
 
-        if(textUsername.getText().toString().isEmpty()){
+        connection = sqc.getConnection();
+        if(connection != null){
+            Toast.makeText(MainActivity.this, "SQL Connection SUCCESSED !!!", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(MainActivity.this, "SQL Connection FAILED !!!", Toast.LENGTH_SHORT).show();
+        }
+
+        //Repository.LoggedInUser = Repository.Communicator.loginUser();
+
+        /*if(textUsername.getText().toString().isEmpty()){
             Toast.makeText(MainActivity.this, "Felhasználónév megadása kötelező !!!", Toast.LENGTH_SHORT).show();
         }
         else if(textPassword.getText().toString().isEmpty()){
@@ -51,6 +63,6 @@ public class MainActivity extends AppCompatActivity {
             else {
                 Toast.makeText(MainActivity.this, "Sikertelen bejelentkezés !!!", Toast.LENGTH_SHORT).show();
             }
-        }
+        }*/
     }
 }
