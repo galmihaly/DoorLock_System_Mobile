@@ -4,6 +4,5 @@ import java.sql.Connection;
 
 public interface Communicator {
 
-    public User loginUser();
-    public Connection getConnection();
+    LoginTypeEnum loginUser(String username, String password);
 }

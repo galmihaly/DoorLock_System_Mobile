@@ -12,27 +12,22 @@ public class Repository {
         TextFile
     }
 
-    public static CommunicatorTypeEnum CommunicatorType = CommunicatorTypeEnum.MsSqlServer;
-    public static Communicator Communicator = null;
+    public CommunicatorTypeEnum CommunicatorType = null;
+    public Communicator Communicator = null;
+    public User LoggedInUser = null;
 
-    public static User LoggedInUser = null;
+    public Repository(CommunicatorTypeEnum enumType){
+        this.CommunicatorType = enumType;
 
-    public static String VersionInfo()
-    {
-        return "1.0";
-    }
-
-
-    public static boolean Initialize() throws Exception {
-
-        switch(CommunicatorType)
-        {
-            case MsSqlServer:
-                Communicator = new SqlDatabaseCommunicator();
-                return true;
-
-            default:
-                throw new Exception("A megadott interfész még nincs implementálva!");
+        if(enumType.equals(CommunicatorTypeEnum.MsSqlServer)){
+            this.Communicator = new SqlDatabaseCommunicator();
         }
+        else {
+            this.Communicator = null;
+        }
+
+        this.LoggedInUser = new User();
     }
+
+
 }
