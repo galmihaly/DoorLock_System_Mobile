@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
        if(!(textPassword.getText().toString().isEmpty()) && !(textUsername.getText().toString().isEmpty())){
            isLogin = repository.Communicator.loginUser(textUsername.getText().toString(), textPassword.getText().toString());
+
            if(isLogin == LoginTypeEnum.LOGIN_ACCESS){
                userName.setText(repository.LoggedInUser.name);
                Toast.makeText(MainActivity.this, "Sikeres bejelentkezés !!!", Toast.LENGTH_SHORT).show();
