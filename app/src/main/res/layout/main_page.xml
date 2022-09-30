@@ -158,6 +158,7 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/logout_button_style"
             android:contentDescription="TODO"
+            android:onClick="logOutButtonClicked"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_baseline_login_24"

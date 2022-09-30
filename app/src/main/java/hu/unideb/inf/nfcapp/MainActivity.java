@@ -1,16 +1,20 @@
 package hu.unideb.inf.nfcapp;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.sql.Connection;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +23,21 @@ public class MainActivity extends AppCompatActivity {
     private TextView userName;
     private Button loginButton;
     private LoginTypeEnum isLogin = null;
+
+    ActivityResultLauncher addActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent newIntent = new Intent(MainActivity.this, MainpageActivity.class);
+                        newIntent.putExtra("Username", User._name);
+                        newIntent.putExtra("Address", User._address);
+                        newIntent.putExtra("Accountname", User._name);
+                        setResult(RESULT_OK, newIntent);
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     @SuppressLint("ShowToast")
-    public void loginUser(View view) {
+    public void loginUserClicked(View view) {
 
         Repository repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
         if(repository.Communicator == null){
@@ -44,10 +65,13 @@ public class MainActivity extends AppCompatActivity {
 
        if(!(textPassword.getText().toString().isEmpty()) && !(textUsername.getText().toString().isEmpty())){
            isLogin = repository.Communicator.loginUser(textUsername.getText().toString(), textPassword.getText().toString());
-
            if(isLogin == LoginTypeEnum.LOGIN_ACCESS){
-               userName.setText(repository.LoggedInUser.name);
+               userName.setText(User._account);
                Toast.makeText(MainActivity.this, "Sikeres bejelentkezés !!!", Toast.LENGTH_SHORT).show();
+
+               Intent intent = new Intent(this, MainpageActivity.class);
+               addActivityResultLauncher.launch(intent);
+
            }
            else if(isLogin == LoginTypeEnum.LOGIN_FAILED){
                Toast.makeText(MainActivity.this, "Sikertelen bejelentkezés !!!", Toast.LENGTH_SHORT).show();

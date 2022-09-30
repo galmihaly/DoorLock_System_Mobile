@@ -1,16 +1,12 @@
 package hu.unideb.inf.nfcapp;
 
 import android.os.StrictMode;
-import android.util.Log;
-import android.widget.Toast;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 
 public class SqlDatabaseCommunicator implements Communicator {
 
@@ -21,7 +17,6 @@ public class SqlDatabaseCommunicator implements Communicator {
     private final String _password = "0207";
 
     Connection connection;
-    User user;
     String request;
     Statement stmt;
     ResultSet rs;
@@ -37,11 +32,10 @@ public class SqlDatabaseCommunicator implements Communicator {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        user = new User();
-
         String connectionURL = null;
 
         try {
+
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
 
             sb = new StringBuilder();
@@ -53,23 +47,21 @@ public class SqlDatabaseCommunicator implements Communicator {
 
             try{
                 if(connection != null){
-                    query = "SELECT [Id], [Name], [Address] FROM Users WHERE Account = '" + username + "' and Password = '" + password + "'";
+                    query = "SELECT [Id], [Name], [Address], [Account] FROM Users WHERE Account = '" + username + "' and Password = '" + password + "'";
                     stmt = connection.createStatement();
                     rs = stmt.executeQuery(query);
 
                     size = 0;
+
                     while (rs.next()){
+                        User._id = rs.getInt(1);
+                        User._name = rs.getString(2);
+                        User._address = rs.getString(3);
+                        User._account = rs.getString(4);
                         size++;
                     }
 
-                    if(size != 0){
-                        while (rs.next()){
-                            user._id = rs.getInt(1);
-                            user.name = rs.getString(2);
-                            user._address = rs.getString(3);
-                        }
-                    }
-                    else{
+                    if(size == 0){
                         return LoginTypeEnum.LOGIN_FAILED;
                     }
                 }
