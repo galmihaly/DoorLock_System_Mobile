@@ -24,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     private Button loginButton;
     private LoginTypeEnum isLogin = null;
 
+    String firstname;
+    String[] seged;
+
     ActivityResultLauncher addActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -49,8 +52,6 @@ public class MainActivity extends AppCompatActivity {
         textUsername = (EditText) findViewById(R.id.textUsername);
         textPassword = (EditText) findViewById(R.id.textPassword);
 
-        userName = (TextView) findViewById(R.id.userName);
-
     }
 
 
@@ -66,11 +67,17 @@ public class MainActivity extends AppCompatActivity {
        if(!(textPassword.getText().toString().isEmpty()) && !(textUsername.getText().toString().isEmpty())){
            isLogin = repository.Communicator.loginUser(textUsername.getText().toString(), textPassword.getText().toString());
            if(isLogin == LoginTypeEnum.LOGIN_ACCESS){
-               userName.setText(User._account);
+
                Toast.makeText(MainActivity.this, "Sikeres bejelentkezés !!!", Toast.LENGTH_SHORT).show();
 
+               seged = User._name.split(" ");
+               firstname = seged[1];
+
                Intent intent = new Intent(this, MainpageActivity.class);
-               addActivityResultLauncher.launch(intent);
+               intent.putExtra("Username", firstname);
+               intent.putExtra("Accountname", User._account);
+               intent.putExtra("Address", User._address);
+               startActivity(intent);
 
            }
            else if(isLogin == LoginTypeEnum.LOGIN_FAILED){
@@ -84,14 +91,14 @@ public class MainActivity extends AppCompatActivity {
            }
 
        }
+       else if(textUsername.getText().toString().isEmpty() && textPassword.getText().toString().isEmpty()){
+           Toast.makeText(MainActivity.this, "Felhasználónév és jelszó megadása kötelező !!!", Toast.LENGTH_SHORT).show();
+       }
        else if(textUsername.getText().toString().isEmpty()){
            Toast.makeText(MainActivity.this, "Felhasználónév megadása kötelező !!!", Toast.LENGTH_SHORT).show();
        }
        else if(textPassword.getText().toString().isEmpty()){
            Toast.makeText(MainActivity.this, "Jelszó megadása kötelező !!!", Toast.LENGTH_SHORT).show();
-       }
-       else if(textUsername.getText().toString().isEmpty() || textPassword.getText().toString().isEmpty()){
-           Toast.makeText(MainActivity.this, "Felhasználónév és jelszó megadása kötelező !!!", Toast.LENGTH_SHORT).show();
        }
 
     }
