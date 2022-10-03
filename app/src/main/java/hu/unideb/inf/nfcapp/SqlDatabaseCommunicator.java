@@ -10,8 +10,8 @@ import java.sql.Statement;
 
 public class SqlDatabaseCommunicator implements Communicator {
 
-    //private final String _ipAddress = "172.16.1.6";
-    private final String _ipAddress = "192.168.1.69";
+    private final String _ipAddress = "172.16.1.6";
+    //private final String _ipAddress = "192.168.1.69";
     private final String _portNumber = "1433";
     private final String _databaseName = "test";
     private final String _userId = "sa";

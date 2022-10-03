@@ -27,21 +27,6 @@ public class MainActivity extends AppCompatActivity {
     String firstname;
     String[] seged;
 
-    ActivityResultLauncher addActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent newIntent = new Intent(MainActivity.this, MainpageActivity.class);
-                        newIntent.putExtra("Username", User._name);
-                        newIntent.putExtra("Address", User._address);
-                        newIntent.putExtra("Accountname", User._name);
-                        setResult(RESULT_OK, newIntent);
-                    }
-                }
-            });
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -20,6 +20,9 @@
         <activity android:name=".MainpageActivity"
             android:parentActivityName=".MainActivity"/>
 
+        <activity android:name=".CalendarpageActivity"
+            android:parentActivityName=".MainpageActivity"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

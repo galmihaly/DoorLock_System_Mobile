@@ -3,15 +3,8 @@ package hu.unideb.inf.nfcapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainpageActivity extends AppCompatActivity {
@@ -20,6 +13,7 @@ public class MainpageActivity extends AppCompatActivity {
     private TextView loggedAccountname = null;
     private TextView loggedUserAddress = null;
     private TextView loggedCardId = null;
+    private ImageButton calendarButton;
 
 
     @Override
@@ -31,6 +25,7 @@ public class MainpageActivity extends AppCompatActivity {
         loggedAccountname = findViewById(R.id.loggedAccountname);
         loggedUserAddress = findViewById(R.id.loggedUserAddress);
         loggedCardId = findViewById(R.id.loggedCardId);
+        calendarButton = findViewById(R.id.calendarButton);
 
         Intent intent = getIntent();
 
@@ -46,6 +41,12 @@ public class MainpageActivity extends AppCompatActivity {
         loggedAccountname.setText(null);
         loggedUserAddress.setText(null);
 
-        finish();
+        this.finish();
+    }
+
+    public void createCalendarClicked(View view) {
+
+        Intent calendarIntent = new Intent(this, CalendarpageActivity.class);
+        startActivity(calendarIntent);
     }
 }
