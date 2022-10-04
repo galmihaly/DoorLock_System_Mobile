@@ -1,12 +1,15 @@
 package hu.unideb.inf.nfcapp;
 
 import android.os.StrictMode;
+import android.util.Log;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SqlDatabaseCommunicator implements Communicator {
 
@@ -17,14 +20,17 @@ public class SqlDatabaseCommunicator implements Communicator {
     private final String _userId = "sa";
     private final String _password = "0207";
 
-    Connection connection;
-    String request;
-    Statement stmt;
-    ResultSet rs;
-    int size;
-    String query;
+    private Connection connection;
+    private String request;
+    private Statement stmt;
+    private ResultSet rs;
+    private int size;
+    private String query;
+    private List<MyLog> myLogs;
+    private MyLog myLog;
+    private String date;
 
-    StringBuilder sb;
+    private StringBuilder sb;
 
 
 
@@ -78,5 +84,82 @@ public class SqlDatabaseCommunicator implements Communicator {
         }
 
         return LoginTypeEnum.LOGIN_ACCESS;
+    }
+
+    @Override
+    public List<MyLog> getLogbyDate(int year, int mounth, int dayOfMounth) {
+        myLogs = new ArrayList<>();
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        String connectionURL = null;
+
+        try {
+
+            Class.forName("net.sourceforge.jtds.jdbc.Driver");
+
+            sb = new StringBuilder();
+
+            connectionURL = sb.append("jdbc:jtds:sqlserver://").append(_ipAddress).append(":").append(_portNumber).append("/")
+                    .append(_databaseName).toString();
+
+            connection = DriverManager.getConnection(connectionURL, _userId, _password);
+
+            String today;
+            String tommorow;
+
+            /*if(mounth < 10){
+                today = String.valueOf(year) + "-0" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth);
+                tommorow = String.valueOf(year) + "-0" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth + 1);
+            }
+            else {
+                today = String.valueOf(year) + "-" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth);
+                tommorow = String.valueOf(year) + "-" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth + 1);
+            }*/
+
+            today = String.valueOf(year) + "-" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth);
+            tommorow = String.valueOf(year) + "-" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth + 1);
+
+            Log.e("today: ", today);
+            Log.e("tommorow: ", tommorow);
+
+            try{
+                if(connection != null){
+                    query = "SELECT [GateId], [EntryDate], [LogTypeId] FROM Log WHERE EntryDate >= '" + today + "' and EntryDate <= '" + tommorow + "'";
+                    Log.e("Query: ", query);
+                    stmt = connection.createStatement();
+                    rs = stmt.executeQuery(query);
+
+                    size = 0;
+
+                    while (rs.next()){
+                        myLog = new MyLog();
+                        myLog._gateId = rs.getInt(0);
+                        myLog._date = rs.getString(1);
+                        myLog._logTypeId = rs.getInt(2);
+
+                        myLogs.add(myLog);
+                        size++;
+                    }
+
+                    if(size == 0){
+                        Log.e("Mérete: ", String.valueOf(size));
+                        return null;
+                    }
+
+                }
+
+            }catch (SQLException e){
+                //return null;
+            }
+
+            connection.close();
+        }
+        catch (Exception e){
+            //return null;
+        }
+
+        return myLogs;
     }
 }
