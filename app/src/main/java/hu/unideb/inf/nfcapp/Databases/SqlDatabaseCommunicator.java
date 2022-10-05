@@ -1,4 +1,4 @@
-package hu.unideb.inf.nfcapp;
+package hu.unideb.inf.nfcapp.Databases;
 
 import android.os.StrictMode;
 import android.util.Log;
@@ -10,6 +10,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import hu.unideb.inf.nfcapp.Enums.LogEnums;
+import hu.unideb.inf.nfcapp.Enums.LoginTypeEnum;
+import hu.unideb.inf.nfcapp.Models.MyLog;
+import hu.unideb.inf.nfcapp.Models.User;
 
 public class SqlDatabaseCommunicator implements Communicator {
 
@@ -28,7 +33,6 @@ public class SqlDatabaseCommunicator implements Communicator {
     private String query;
     private List<MyLog> myLogs;
     private MyLog myLog;
-    private String date;
 
     private StringBuilder sb;
 
@@ -109,25 +113,19 @@ public class SqlDatabaseCommunicator implements Communicator {
             String today;
             String tommorow;
 
-            /*if(mounth < 10){
-                today = String.valueOf(year) + "-0" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth);
-                tommorow = String.valueOf(year) + "-0" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth + 1);
+            if(dayOfMounth == 31){
+                Log.e("dayofmounth= ", String.valueOf(dayOfMounth));
+                today = String.valueOf(year) + "-" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth);
+                tommorow = String.valueOf(year) + "-" + String.valueOf(mounth + 1) + "-" + String.valueOf(1);
             }
-            else {
+            else{
                 today = String.valueOf(year) + "-" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth);
                 tommorow = String.valueOf(year) + "-" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth + 1);
-            }*/
-
-            today = String.valueOf(year) + "-" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth);
-            tommorow = String.valueOf(year) + "-" + String.valueOf(mounth) + "-" + String.valueOf(dayOfMounth + 1);
-
-            Log.e("today: ", today);
-            Log.e("tommorow: ", tommorow);
+            }
 
             try{
                 if(connection != null){
-                    query = "SELECT [GateId], [EntryDate], [LogTypeId] FROM Log WHERE EntryDate >= '" + today + "' and EntryDate <= '" + tommorow + "'";
-                    Log.e("Query: ", query);
+                    query = "SELECT [GateId], CONVERT(varchar, EntryDate, 120), [LogTypeId] FROM Log WHERE EntryDate >= '" + today + "' and EntryDate <= '" + tommorow + "'";
                     stmt = connection.createStatement();
                     rs = stmt.executeQuery(query);
 
@@ -135,31 +133,39 @@ public class SqlDatabaseCommunicator implements Communicator {
 
                     while (rs.next()){
                         myLog = new MyLog();
-                        myLog._gateId = rs.getInt(0);
-                        myLog._date = rs.getString(1);
-                        myLog._logTypeId = rs.getInt(2);
+                        myLog._gateId = rs.getInt(1);
+                        myLog._date = rs.getString(2);
+                        myLog._logTypeId = rs.getInt(3);
 
                         myLogs.add(myLog);
+
                         size++;
                     }
+                    Log.e("Mérete logs: ", String.valueOf(myLogs.size()));
 
                     if(size == 0){
                         Log.e("Mérete: ", String.valueOf(size));
+                        MyLog._myMessage = LogEnums.LOG_NO_EVENTS;
                         return null;
                     }
 
                 }
 
             }catch (SQLException e){
-                //return null;
+                Log.e("Hiba: ", e.getMessage());
+                MyLog._myMessage = LogEnums.SQL_READING_FAILED;
+                return null;
             }
 
             connection.close();
         }
         catch (Exception e){
-            //return null;
+            Log.e("Hiba: ", e.getMessage());
+            MyLog._myMessage = LogEnums.SQL_CONNECTION_FAILED;
+            return null;
         }
 
+        MyLog._myMessage = LogEnums.LOG_HAS_EVENTS;
         return myLogs;
     }
 }

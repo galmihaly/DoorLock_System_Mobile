@@ -1,4 +1,4 @@
-package hu.unideb.inf.nfcapp;
+package hu.unideb.inf.nfcapp.Enums;
 
 public enum LoginTypeEnum
 {

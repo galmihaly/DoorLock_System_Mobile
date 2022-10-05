@@ -1,4 +1,4 @@
-package hu.unideb.inf.nfcapp;
+package hu.unideb.inf.nfcapp.Models;
 
 public class User {
 

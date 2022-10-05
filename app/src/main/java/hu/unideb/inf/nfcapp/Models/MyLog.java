@@ -1,10 +1,13 @@
-package hu.unideb.inf.nfcapp;
+package hu.unideb.inf.nfcapp.Models;
+
+import java.sql.Date;
 
 public class MyLog {
 
     public int _gateId;
     public String _date;
     public int _logTypeId;
+    public static Enum _myMessage;
 
     public int get_gateId() {
         return _gateId;

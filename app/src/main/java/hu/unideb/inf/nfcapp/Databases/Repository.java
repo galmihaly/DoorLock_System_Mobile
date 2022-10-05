@@ -1,6 +1,6 @@
-package hu.unideb.inf.nfcapp;
+package hu.unideb.inf.nfcapp.Databases;
 
-import android.widget.Toast;
+import hu.unideb.inf.nfcapp.Models.User;
 
 public class Repository {
     public enum CommunicatorTypeEnum
