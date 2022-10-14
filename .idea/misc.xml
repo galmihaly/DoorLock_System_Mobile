@@ -27,9 +27,12 @@
         <entry key="..\:/Szakdolgozat/NFCapp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2985" />
         <entry key="..\:/Szakdolgozat/NFCapp/app/src/main/res/layout/activity_main.xml" value="0.338768115942029" />
         <entry key="..\:/Szakdolgozat/NFCapp2/NFCapp/app/src/main/res/drawable/background1.xml" value="0.342" />
+        <entry key="..\:/Szakdolgozat/NFCapp2/NFCapp/app/src/main/res/drawable/calendar_button_style.xml" value="0.342" />
+        <entry key="..\:/Szakdolgozat/NFCapp2/NFCapp/app/src/main/res/drawable/constraint_background.xml" value="0.342" />
+        <entry key="..\:/Szakdolgozat/NFCapp2/NFCapp/app/src/main/res/drawable/ic_baseline_calendar_month_24.xml" value="0.342" />
         <entry key="..\:/Szakdolgozat/NFCapp2/NFCapp/app/src/main/res/layout/activity_main.xml" value="0.35733695652173914" />
         <entry key="..\:/Szakdolgozat/NFCapp2/NFCapp/app/src/main/res/layout/calendar_page.xml" value="0.33" />
-        <entry key="..\:/Szakdolgozat/NFCapp2/NFCapp/app/src/main/res/layout/main_page.xml" value="0.18802083333333333" />
+        <entry key="..\:/Szakdolgozat/NFCapp2/NFCapp/app/src/main/res/layout/main_page.xml" value="0.75" />
       </map>
     </option>
   </component>
