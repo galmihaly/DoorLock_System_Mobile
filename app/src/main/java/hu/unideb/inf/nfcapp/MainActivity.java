@@ -2,6 +2,7 @@ package hu.unideb.inf.nfcapp;
 
 import hu.unideb.inf.nfcapp.Databases.Repository;
 import hu.unideb.inf.nfcapp.Enums.LoginTypeEnum;
+import hu.unideb.inf.nfcapp.Enums.SQLEnums;
 import hu.unideb.inf.nfcapp.Models.User;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,9 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText textPassword;
     private EditText textUsername;
-    private TextView userName;
     private Button loginButton;
-    private LoginTypeEnum isLogin = null;
+    private Enum isLogin = null;
 
     String firstname;
     String[] seged;
@@ -29,15 +29,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        loginButton = findViewById(R.id.loginButton);
+        loginButton = (Button) findViewById(R.id.loginButton);
 
         // inputTexts
         textUsername = (EditText) findViewById(R.id.textUsername);
         textPassword = (EditText) findViewById(R.id.textPassword);
 
     }
-
-
 
     @SuppressLint("ShowToast")
     public void loginUserClicked(View view) {
@@ -53,11 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
                Toast.makeText(MainActivity.this, "Sikeres bejelentkezés !!!", Toast.LENGTH_SHORT).show();
 
-               seged = User._name.split(" ");
-               firstname = seged[1];
-
                Intent intent = new Intent(this, MainpageActivity.class);
-               intent.putExtra("Username", firstname);
+               intent.putExtra("Username", User._name);
                intent.putExtra("Accountname", User._account);
                intent.putExtra("Address", User._address);
                startActivity(intent);
@@ -66,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
            else if(isLogin == LoginTypeEnum.LOGIN_FAILED){
                Toast.makeText(MainActivity.this, "Sikertelen bejelentkezés !!!", Toast.LENGTH_SHORT).show();
            }
-           else if(isLogin == LoginTypeEnum.SQL_READING_FAILED){
+           else if(isLogin == SQLEnums.SQL_READING_FAILED){
                Toast.makeText(MainActivity.this, "Nem sikerült az adatbázisból lekérdezni rekordot !!!", Toast.LENGTH_SHORT).show();
            }
-           else if(isLogin == LoginTypeEnum.SQL_CONNECTION_FAILED){
+           else if(isLogin == SQLEnums.SQL_CONNECTION_FAILED){
                Toast.makeText(MainActivity.this, "Nem sikerült az adatbázishoz csatlakozni !!!", Toast.LENGTH_SHORT).show();
            }
 

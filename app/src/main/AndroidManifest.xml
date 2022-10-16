@@ -18,14 +18,17 @@
         tools:targetApi="31">
 
         <activity android:name=".MainpageActivity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity"
+            android:launchMode="singleTop"/>
 
         <activity android:name=".CalendarpageActivity"
-            android:parentActivityName=".MainpageActivity"/>
+            android:parentActivityName=".MainpageActivity"
+            android:launchMode="singleTop"/>
 
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
