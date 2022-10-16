@@ -7,7 +7,6 @@ import hu.unideb.inf.nfcapp.Models.MyLog;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.CalendarView;
 import android.widget.LinearLayout;
@@ -24,7 +23,6 @@ import java.util.List;
 public class CalendarpageActivity extends AppCompatActivity {
 
     private CalendarView myCalendarView;
-    private TextView testTextView;
     private List<MyLog> myLogs;
     private Repository repository;
     private LinearLayout myLinearLayout;
@@ -33,7 +31,6 @@ public class CalendarpageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar_page);
-        testTextView = findViewById(R.id.testTextView);
         myLinearLayout = findViewById(R.id.eventsLinearLayout);
 
         myCalendarView = findViewById(R.id.myCalendar);
@@ -50,25 +47,14 @@ public class CalendarpageActivity extends AppCompatActivity {
 
             myLinearLayout.removeAllViews();
 
-            if(mounth < 10) testTextView.setText(String.format("%d-0%d-%d", year, mounth, dayOfMounth));
-            else            testTextView.setText(String.format("%d-%d-%d", year, mounth, dayOfMounth));
-
-
             repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
             myLogs = new ArrayList<>();
             myLogs = repository.Communicator.getLogsbyDate(year, mounth, dayOfMounth);
 
 
             if(MyLog._myMessage == SQLEnums.SQL_READING_SUCCES){
-                testTextView.setText(String.valueOf(myLogs.get(0)._date));
-
-                for (int i = 0; i < myLogs.size(); i++){
-                    Log.e("Mylog " + i + ":", String.valueOf(myLogs.get(i)._date));
-
-                }
 
                 addDateListToTextbox(myLogs);
-
                 Toast.makeText(CalendarpageActivity.this, "Sikeres!", Toast.LENGTH_LONG).show();
             }
             else if(MyLog._myMessage == SQLEnums.SQL_NO_EVENTS){
@@ -118,33 +104,24 @@ public class CalendarpageActivity extends AppCompatActivity {
         }
         else{
             for (int k  = 0; k < myLogs.size(); k += 2){
+
+                myTextView = new TextView(this);
+                myTextView.setLayoutParams(textViewParams);
+                myTextView.setTextColor(Color.WHITE);
+
+                myCardView = new CardView(this);
+                myCardView.setLayoutParams(cardViewParams);
+                myCardView.setRadius(10);
+
                 if (k == myLogs.size() - 1) {
                     setText = getCardLogTextFailed(myLogs.get(k));
-
-                    myTextView = new TextView(this);
-                    myTextView.setLayoutParams(textViewParams);
-                    myTextView.setTextColor(Color.WHITE);
-
-                    myCardView = new CardView(this);
-                    myCardView.setLayoutParams(cardViewParams);
-                    myCardView.setRadius(10);
                     myCardView.setCardBackgroundColor(Color.rgb(229,45,33));
 
                     if(setText != null) myTextView.setText(setText);
-                    Log.e(String.valueOf(k), setText);
 
                 } else {
                     setText = getCardLogTextSucces(myLogs.get(k), myLogs.get(k + 1));
-
-                    myTextView = new TextView(this);
-                    myTextView.setLayoutParams(textViewParams);
-                    myTextView.setTextColor(Color.WHITE);
-
-                    myCardView = new CardView(this);
-                    myCardView.setLayoutParams(cardViewParams);
-                    myCardView.setRadius(10);
                     myCardView.setCardBackgroundColor(Color.rgb(42,150,42));
-
 
                     if(setText != null) myTextView.setText(setText);
 
