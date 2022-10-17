@@ -2,6 +2,8 @@ package hu.unideb.inf.nfcapp.Databases;
 
 import android.os.StrictMode;
 import android.util.Log;
+
+import hu.unideb.inf.nfcapp.Enums.LogTypeEnums;
 import hu.unideb.inf.nfcapp.Enums.LoginTypeEnum;
 import hu.unideb.inf.nfcapp.Enums.SQLEnums;
 import hu.unideb.inf.nfcapp.Models.MyLog;
@@ -35,6 +37,7 @@ public class SqlDatabaseCommunicator implements Communicator {
 
     private String _lastLogoutDate = null;
     private String[] dates;
+    private List<Integer> _gatePermissions;
 
     @Override // hu.unideb.inf.nfcapp.Databases.Communicator
     public Enum loginUser(String username, String password) {
@@ -46,7 +49,8 @@ public class SqlDatabaseCommunicator implements Communicator {
         try {
             if (connection != null) {
 
-                query = "SELECT [Id], [Name], [Address], [Account] FROM Users WHERE Account = '" + username + "' and Password = '" + password + "'";
+                query = "SELECT [Id], [Name], [Address], [Account] FROM Users WHERE Account = '" + username + "' and " +
+                        "                                                           Password = '" + password + "'";
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(this.query);
                 size = 0;
@@ -74,6 +78,45 @@ public class SqlDatabaseCommunicator implements Communicator {
         return LoginTypeEnum.LOGIN_ACCESS;
     }
 
+    @Override
+    public List<Integer> getGatePermissions() {
+
+        _gatePermissions = new ArrayList<>();
+        getConnection();
+
+        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return null;
+
+        try {
+            if (connection != null) {
+
+                query = "SELECT GateId FROM UserGates WHERE UserId = '" + User._id + "'";
+                stmt = connection.createStatement();
+                rs = stmt.executeQuery(query);
+                size = 0;
+
+                while (rs.next()) {
+
+                    _gatePermissions.add(rs.getInt(1));
+                    size++;
+                }
+
+                if (size == 0) {
+                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
+                    return null;
+                }
+
+                connection.close();
+            }
+        } catch (SQLException e) {
+            //Log.e("Hiba: ", e.getMessage());
+            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
+            return null;
+        }
+
+        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
+        return _gatePermissions;
+    }
+
     @Override // hu.unideb.inf.nfcapp.Databases.Communicator
     public List<MyLog> getLogsbyDate(int year, int mounth, int dayOfMounth) {
 
@@ -91,7 +134,8 @@ public class SqlDatabaseCommunicator implements Communicator {
                 Log.e("e:", String.valueOf(dates[0]));
                 Log.e("s:", String.valueOf(dates[1]));
 
-                query = "SELECT [UserId], [GateId], CONVERT(varchar, EntryDate, 120), [LogTypeId] FROM Log WHERE UserId = " + User._id + "and EntryDate >= '" + dates[0] + "' and EntryDate <= '" + dates[1] + "'";
+                query = "SELECT [UserId], [GateId], CONVERT(varchar, EntryDate, 120), [LogTypeId] FROM Log WHERE UserId = " + User._id + "and " +
+                                                                                                                "EntryDate >= '" + dates[0] + "' and EntryDate <= '" + dates[1] + "'";
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(query);
                 size = 0;
@@ -102,7 +146,7 @@ public class SqlDatabaseCommunicator implements Communicator {
 
                     myLog._userId = rs.getInt(1);
                     myLog._gateId = rs.getInt(2);
-
+                    Log.e("c:", String.valueOf(rs.getInt(2)));
                     datetime = rs.getString(3).split(" ");
 
                     myLog._date = datetime[0];
@@ -142,7 +186,9 @@ public class SqlDatabaseCommunicator implements Communicator {
         try {
             if (connection != null) {
 
-                query = "SELECT MAX(CONVERT(varchar, EntryDate, 120)) FROM Log where UserId = '" + User._id + "' and LogTypeId = '200' or LogTypeId = '201'";
+                query = "SELECT MAX(CONVERT(varchar, EntryDate, 120)) FROM Log where UserId = '" + User._id + "' and " +
+                                                                                    "LogTypeId = '" + LogTypeEnums.LOGIN_CARD.getLevelCode() + "' or " +
+                                                                                    "LogTypeId = '" + LogTypeEnums.LOGIN_PASSWORD.getLevelCode() + "'";
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(query);
                 size = 0;
@@ -176,7 +222,9 @@ public class SqlDatabaseCommunicator implements Communicator {
 
         try {
             if (connection != null) {
-                query = "SELECT MAX(CONVERT(varchar, EntryDate, 120)) FROM Log where UserId = '" + User._id + "' and LogTypeId = '300' or LogTypeId = '301'";
+                query = "SELECT MAX(CONVERT(varchar, EntryDate, 120)) FROM Log where UserId = '" + User._id + "' and " +
+                                                                                    "LogTypeId = '" + LogTypeEnums.LOGOUT_CARD.getLevelCode() +"' or " +
+                                                                                    "LogTypeId = '" + LogTypeEnums.LOGOUT_PASSWORD.getLevelCode() + "'";
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(query);
                 size = 0;
@@ -213,9 +261,12 @@ public class SqlDatabaseCommunicator implements Communicator {
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
             sb = new StringBuilder();
 
-            String connectionURL = sb.append("jdbc:jtds:sqlserver://").append(_serverName)
-                    .append(":").append(_portNumber)
-                    .append("/").append(_databaseName).toString();
+            String connectionURL = sb.append("jdbc:jtds:sqlserver://")
+                                     .append(_serverName)
+                                     .append(":").append(_portNumber)
+                                     .append("/").append(_databaseName)
+                                     .toString();
+
             connection = DriverManager.getConnection(connectionURL, _userId, _password);
         }
         catch (SQLException | ClassNotFoundException e) {

@@ -11,57 +11,91 @@ import androidx.appcompat.app.AppCompatActivity;
 import hu.unideb.inf.nfcapp.Databases.Repository;
 import hu.unideb.inf.nfcapp.Enums.SQLEnums;
 import hu.unideb.inf.nfcapp.Models.MyLog;
+import hu.unideb.inf.nfcapp.helpers.Helper;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 public class MainpageActivity extends AppCompatActivity {
 
-    private ImageButton calendarButton;
     private TextView loggedUsername = null;
     private TextView loggedAccountname = null;
     private TextView loggedUserAddress = null;
-    private Repository repository = null;
-    private TextView lastLoginDate = null;
-    private TextView lastLogoutDate = null;
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private TextView loggedCardId = null;
+    private final Repository repository = null;
+    private TextView lastLoginDate;
+    private TextView lastLogoutDate;
+    private final StringBuilder sb = new StringBuilder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_page);
 
-        this.loggedUsername = (TextView) findViewById(R.id.loggedUsername);
-        this.loggedAccountname = (TextView) findViewById(R.id.loggedAccountname);
-        this.loggedUserAddress = (TextView) findViewById(R.id.loggedUserAddress);
-        this.loggedCardId = (TextView) findViewById(R.id.loggedCardId);
-        this.calendarButton = (ImageButton) findViewById(R.id.calendarButton);
-        this.lastLoginDate = (TextView) findViewById(R.id.lastLoginDate);
-        this.lastLogoutDate = (TextView) findViewById(R.id.lastLogoutDate);
+        loggedUsername = (TextView) findViewById(R.id.loggedUsername);
+        loggedAccountname = (TextView) findViewById(R.id.loggedAccountname);
+        loggedUserAddress = (TextView) findViewById(R.id.loggedUserAddress);
+        TextView loggedCardId = (TextView) findViewById(R.id.loggedCardId);
+        ImageButton calendarButton = (ImageButton) findViewById(R.id.calendarButton);
+        lastLoginDate = (TextView) findViewById(R.id.lastLoginDate);
+        lastLogoutDate = (TextView) findViewById(R.id.lastLogoutDate);
 
         Intent intent = getIntent();
-        this.loggedUsername.setText(intent.getStringExtra("Username"));
-        this.loggedAccountname.setText(intent.getStringExtra("Accountname"));
-        this.loggedUserAddress.setText(intent.getStringExtra("Address"));
+        loggedUsername.setText(intent.getStringExtra("Username"));
+        loggedAccountname.setText(intent.getStringExtra("Accountname"));
+        loggedUserAddress.setText(intent.getStringExtra("Address"));
+
+        getLastLogDate();
+
 
         Repository repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
-        this.repository = repository;
+
+        List<Integer> gatePermissions = repository.Communicator.getGatePermissions();
+
+        if(gatePermissions.size() != 0){
+
+            for(int i = 0; i < gatePermissions.size(); i++)
+                sb.append(gatePermissions.get(i)).append(", ");
+
+            loggedCardId.setText(sb.toString());
+            sb.setLength(0);
+        }
+    }
+
+    public void logOutButtonClicked(View view) {
+        loggedUsername.setText((CharSequence) null);
+        loggedAccountname.setText((CharSequence) null);
+        loggedUserAddress.setText((CharSequence) null);
+        finish();
+    }
+
+    public void createCalendarClicked(View view) {
+        Intent calendarIntent = new Intent(this, CalendarpageActivity.class);
+        startActivity(calendarIntent);
+    }
+
+    public void refreshStatisticsClicked(View view){
+        getLastLogDate();
+    }
+
+    public void getLastLogDate(){
+
+        Repository repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
 
         String _lastLoginDate = repository.Communicator.getLastLoginDate();
-        String _lastLogoutDate = this.repository.Communicator.getLastLogoutDate();
-        Log.e("t: ", String.valueOf(_lastLoginDate));
+        String _lastLogoutDate = repository.Communicator.getLastLogoutDate();
 
-        if (_lastLoginDate != null) {
-            if (compareLoginDates(_lastLoginDate, _lastLogoutDate)) {
-                this.lastLoginDate.setText(_lastLoginDate);
-                this.lastLogoutDate.setText(_lastLogoutDate);
-                return;
+        if (_lastLoginDate != null && _lastLogoutDate != null) {
+            if (Helper.compareLoginDates(_lastLoginDate, _lastLogoutDate)) {
+                lastLoginDate.setText(_lastLoginDate);
+                lastLogoutDate.setText(_lastLogoutDate);
             }
-
-            this.lastLoginDate.setText(_lastLoginDate);
-            this.lastLogoutDate.setText("Még nem jelentkezett\n ki!");
+            else {
+                lastLoginDate.setText(_lastLoginDate);
+                lastLogoutDate.setText("Még nem jelentkezett\n ki!");
+            }
 
         } else if (!MyLog._myMessage.equals(SQLEnums.SQL_READING_FAILED)) {
 
@@ -71,35 +105,9 @@ public class MainpageActivity extends AppCompatActivity {
 
         } else {
 
-            this.lastLoginDate.setText("Nincs bejelentkezési adat!");
+            lastLoginDate.setText("Nincs bejelentkezési adat!");
         }
 
-
-
-
-    }
-
-
-    public boolean compareLoginDates(String date1, String date2) {
-        try {
-            Date d1 = this.sdf.parse(date1);
-            Date d2 = this.sdf.parse(date2);
-            return d2.after(d1);
-        } catch (ParseException e) {
-            return false;
-        }
-    }
-
-    public void logOutButtonClicked(View view) {
-        this.loggedUsername.setText((CharSequence) null);
-        this.loggedAccountname.setText((CharSequence) null);
-        this.loggedUserAddress.setText((CharSequence) null);
-        finish();
-    }
-
-    public void createCalendarClicked(View view) {
-        Intent calendarIntent = new Intent(this, CalendarpageActivity.class);
-        startActivity(calendarIntent);
     }
 
 }
