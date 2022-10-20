@@ -117,7 +117,7 @@ public class CalendarpageActivity extends AppCompatActivity {
 
                 myCardView = new CardView(this);
                 myCardView.setLayoutParams(cardViewParams);
-                myCardView.setRadius(10);
+                myCardView.setRadius(17);
                 myCardView.setCardBackgroundColor(Color.rgb(42,150,42));
 
                 if(setText != null) myTextView.setText(setText);
@@ -136,6 +136,7 @@ public class CalendarpageActivity extends AppCompatActivity {
                 myTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
 
                 myCardView = new CardView(this);
+                myCardView.setRadius(17);
                 myCardView.setLayoutParams(cardViewParams);
 
                 if (k == myLogs.size() - 1) {

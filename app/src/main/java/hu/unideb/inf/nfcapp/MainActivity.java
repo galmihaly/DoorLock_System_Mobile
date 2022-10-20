@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         textUsername = (EditText) findViewById(R.id.textUsername);
         textPassword = (EditText) findViewById(R.id.textPassword);
 
+
+
     }
 
     @SuppressLint("ShowToast")
@@ -78,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
        else if(textPassword.getText().toString().isEmpty()){
            Toast.makeText(MainActivity.this, "Jelszó megadása kötelező !!!", Toast.LENGTH_SHORT).show();
        }
+
+       textUsername.setText("");
+       textPassword.setText("");
 
     }
 }
