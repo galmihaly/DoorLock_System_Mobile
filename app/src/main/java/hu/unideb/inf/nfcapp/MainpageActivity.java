@@ -21,6 +21,15 @@ public class MainpageActivity extends AppCompatActivity {
     private TextView loggedAccountname = null;
     private TextView loggedUserAddress = null;
     private TextView lastPassedTime = null;
+
+    private TextView numberOfLogin = null;
+    private TextView numberOfPasswordLogin = null;
+    private TextView numberOfNfcLogin = null;
+
+    private TextView numberOfLogout = null;
+    private TextView numberOfPasswordLogout = null;
+    private TextView numberOfNfcLogout = null;
+
     private final Repository repository = null;
     private TextView lastLoginDate;
     private TextView lastLogoutDate;
@@ -40,12 +49,21 @@ public class MainpageActivity extends AppCompatActivity {
         lastLogoutDate = (TextView) findViewById(R.id.lastLogoutDate);
         lastPassedTime = findViewById(R.id.lastPassedTime);
 
+        numberOfLogin = findViewById(R.id.numberofLogin);
+        numberOfPasswordLogin = findViewById(R.id.numberofPasswordLogin);
+        numberOfNfcLogin = findViewById(R.id.numberofNfcLogin);
+
+        numberOfLogout = findViewById(R.id.numberofLogout);
+        numberOfPasswordLogout = findViewById(R.id.numberofPasswordLogout);
+        numberOfNfcLogout = findViewById(R.id.numberofNfcLogout);
+
         Intent intent = getIntent();
         loggedUsername.setText(intent.getStringExtra("Username"));
         loggedAccountname.setText(intent.getStringExtra("Accountname"));
         loggedUserAddress.setText(intent.getStringExtra("Address"));
 
         getLastLogDate();
+        getLastPassedTime();
 
         Repository repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
 
@@ -76,6 +94,7 @@ public class MainpageActivity extends AppCompatActivity {
     public void refreshStatisticsClicked(View view){
 
         getLastLogDate();
+        getLastPassedTime();
     }
 
     public void getLastLogDate(){
@@ -87,8 +106,8 @@ public class MainpageActivity extends AppCompatActivity {
 
         if (_lastLoginDate != null && _lastLogoutDate != null) {
             if (Helper.compareLoginDates(_lastLoginDate, _lastLogoutDate)) {
-                lastLoginDate.setText(_lastLoginDate);
-                lastLogoutDate.setText(_lastLogoutDate);
+                lastLoginDate.setText(String.format("%s.", _lastLoginDate));
+                lastLogoutDate.setText(String.format("%s.", _lastLogoutDate));
             }
             else {
                 lastLoginDate.setText(_lastLoginDate);
@@ -111,10 +130,28 @@ public class MainpageActivity extends AppCompatActivity {
 
         Repository repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
 
-        String _lastPassedTime = repository.Communicator.getLastPassedTime();
+        int _lastPassedTime = repository.Communicator.getLastPassedTime();
 
-        if (_lastPassedTime != null) {
-            String resultTime = Helper.parseTimeToHoursAndDay(_lastPassedTime);
+        int _numberOfLogin = repository.Communicator.getNumberOfLogin();
+        int _numberOfPasswordLogin = repository.Communicator.getNumberOfPasswordLogin();
+        int _numberOfNfcLogin = repository.Communicator.getNumberOfNfcLogin();
+
+        int _numberOfLogout = repository.Communicator.getNumberOfLogout();
+        int _numberOfPasswordLogout = repository.Communicator.getNumberOfPasswordLogout();
+        int _numberOfNfcLogout = repository.Communicator.getNumberOfNfcLogout();
+
+        if (_lastPassedTime != 0 || _numberOfLogin != 0 ||
+            _numberOfPasswordLogin != 0 || _numberOfNfcLogin != 0 ||
+            _numberOfPasswordLogout != 0 || _numberOfNfcLogout != 0) {
+            lastPassedTime.setText(Helper.parseTimeToHoursAndDay(_lastPassedTime));
+
+            numberOfLogin.setText(String.valueOf(_numberOfLogin));
+            numberOfPasswordLogin.setText(String.valueOf(_numberOfPasswordLogin));
+            numberOfNfcLogin.setText(String.valueOf(_numberOfNfcLogin));
+
+            numberOfLogout.setText(String.valueOf(_numberOfLogout));
+            numberOfPasswordLogout.setText(String.valueOf(_numberOfPasswordLogout));
+            numberOfNfcLogout.setText(String.valueOf(_numberOfNfcLogout));
 
         } else if (!MyLog._myMessage.equals(SQLEnums.SQL_READING_FAILED)) {
 

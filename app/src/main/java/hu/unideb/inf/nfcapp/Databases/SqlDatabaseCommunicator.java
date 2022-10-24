@@ -36,7 +36,8 @@ public class SqlDatabaseCommunicator implements Communicator {
     private final String _password = "Gm2022!!!";
 
     private String _lastLogoutDate = null;
-    private String _lastPassedTime = null;
+    private int _lastPassedTime = 0;
+    private int _numberOfPassword = 0;
     private String[] dates;
     private List<Integer> _gatePermissions;
 
@@ -254,14 +255,14 @@ public class SqlDatabaseCommunicator implements Communicator {
     }
 
     @Override // hu.unideb.inf.nfcapp.Databases.Communicator
-    public String getLastPassedTime() {
+    public int getLastPassedTime() {
 
         getConnection();
-        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return null;
+        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
 
         try {
             if (connection != null) {
-                query = "select DATEDIFF(HOUR, EntryDate, GETDATE()) from Log where Id = (select MAX(id) From Log where UserId = " + User._id + " and " +
+                query = "select CONVERT(int, DATEDIFF(MINUTE, EntryDate, GETDATE())) from Log where Id = (select MAX(id) From Log where UserId = " + User._id + " and " +
                         "(LogTypeId = " + LogTypeEnums.LOGOUT_CARD.getLevelCode() + " or LogTypeId = " + LogTypeEnums.LOGOUT_PASSWORD.getLevelCode() + "))";
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(query);
@@ -269,25 +270,247 @@ public class SqlDatabaseCommunicator implements Communicator {
 
                 while (rs.next()) {
 
-                    _lastPassedTime = rs.getString(1);
+                    _lastPassedTime = rs.getInt(1);
+                    Log.e("pppppp", String.valueOf(_lastPassedTime));
                     size++;
                 }
 
                 if (size == 0) {
 
                     MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
-                    return null;
+                    return 0;
                 }
 
                 connection.close();
             }
         } catch (Exception e2) {
             MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
-            return null;
+            return 0;
         }
 
         MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
-        return _lastLogoutDate;
+        return _lastPassedTime;
+    }
+
+    // hu.unideb.inf.nfcapp.Databases.Communicator
+    public int getNumberOfLogin() {
+
+        getConnection();
+        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
+
+        try {
+            if (connection != null) {
+                query = "select count(*) from Log where UserId = " + User._id + " and " +
+                        "(LogTypeId = " + LogTypeEnums.LOGIN_CARD.getLevelCode()+" or " +
+                        "LogTypeId = " + LogTypeEnums.LOGIN_PASSWORD.getLevelCode() + ")";
+                stmt = connection.createStatement();
+                rs = stmt.executeQuery(query);
+                size = 0;
+
+                while (rs.next()) {
+
+                    _numberOfPassword = rs.getInt(1);
+                    Log.e("pppppp", String.valueOf(_lastPassedTime));
+                    size++;
+                }
+
+                if (size == 0) {
+
+                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
+                    return 0;
+                }
+
+                connection.close();
+            }
+        } catch (Exception e2) {
+            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
+            return 0;
+        }
+
+        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
+        return _numberOfPassword;
+    }
+
+    public int getNumberOfPasswordLogin() {
+
+        getConnection();
+        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
+
+        try {
+            if (connection != null) {
+                query = "select count(*) from Log where UserId = " + User._id + " and LogTypeId = " + LogTypeEnums.LOGIN_PASSWORD.getLevelCode();
+                stmt = connection.createStatement();
+                rs = stmt.executeQuery(query);
+                size = 0;
+
+                while (rs.next()) {
+
+                    _numberOfPassword = rs.getInt(1);
+                    Log.e("pppppp", String.valueOf(_lastPassedTime));
+                    size++;
+                }
+
+                if (size == 0) {
+
+                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
+                    return 0;
+                }
+
+                connection.close();
+            }
+        } catch (Exception e2) {
+            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
+            return 0;
+        }
+
+        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
+        return _numberOfPassword;
+    }
+
+    public int getNumberOfNfcLogin() {
+
+        getConnection();
+        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
+
+        try {
+            if (connection != null) {
+                query = "select count(*) from Log where UserId = " + User._id + " and LogTypeId = " + LogTypeEnums.LOGIN_CARD.getLevelCode();
+                stmt = connection.createStatement();
+                rs = stmt.executeQuery(query);
+                size = 0;
+
+                while (rs.next()) {
+
+                    _numberOfPassword = rs.getInt(1);
+                    Log.e("pppppp", String.valueOf(_lastPassedTime));
+                    size++;
+                }
+
+                if (size == 0) {
+
+                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
+                    return 0;
+                }
+
+                connection.close();
+            }
+        } catch (Exception e2) {
+            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
+            return 0;
+        }
+
+        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
+        return _numberOfPassword;
+    }
+
+    public int getNumberOfLogout() {
+
+        getConnection();
+        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
+
+        try {
+            if (connection != null) {
+                query = "select count(*) from Log where UserId = " + User._id + " and " +
+                        "(LogTypeId = " + LogTypeEnums.LOGOUT_CARD.getLevelCode()+" or " +
+                        "LogTypeId = " + LogTypeEnums.LOGOUT_PASSWORD.getLevelCode() + ")";
+                stmt = connection.createStatement();
+                rs = stmt.executeQuery(query);
+                size = 0;
+
+                while (rs.next()) {
+
+                    _numberOfPassword = rs.getInt(1);
+                    Log.e("pppppp", String.valueOf(_lastPassedTime));
+                    size++;
+                }
+
+                if (size == 0) {
+
+                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
+                    return 0;
+                }
+
+                connection.close();
+            }
+        } catch (Exception e2) {
+            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
+            return 0;
+        }
+
+        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
+        return _numberOfPassword;
+    }
+
+    public int getNumberOfPasswordLogout() {
+
+        getConnection();
+        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
+
+        try {
+            if (connection != null) {
+                query = "select count(*) from Log where UserId = " + User._id + " and LogTypeId = " + LogTypeEnums.LOGOUT_PASSWORD.getLevelCode();
+                stmt = connection.createStatement();
+                rs = stmt.executeQuery(query);
+                size = 0;
+
+                while (rs.next()) {
+
+                    _numberOfPassword = rs.getInt(1);
+                    Log.e("pppppp", String.valueOf(_lastPassedTime));
+                    size++;
+                }
+
+                if (size == 0) {
+
+                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
+                    return 0;
+                }
+
+                connection.close();
+            }
+        } catch (Exception e2) {
+            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
+            return 0;
+        }
+
+        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
+        return _numberOfPassword;
+    }
+
+    public int getNumberOfNfcLogout() {
+
+        getConnection();
+        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
+
+        try {
+            if (connection != null) {
+                query = "select count(*) from Log where UserId = " + User._id + " and LogTypeId = " + LogTypeEnums.LOGOUT_CARD.getLevelCode();
+                stmt = connection.createStatement();
+                rs = stmt.executeQuery(query);
+                size = 0;
+
+                while (rs.next()) {
+
+                    _numberOfPassword = rs.getInt(1);
+                    Log.e("pppppp", String.valueOf(_lastPassedTime));
+                    size++;
+                }
+
+                if (size == 0) {
+
+                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
+                    return 0;
+                }
+
+                connection.close();
+            }
+        } catch (Exception e2) {
+            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
+            return 0;
+        }
+
+        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
+        return _numberOfPassword;
     }
 
     public void getConnection(){

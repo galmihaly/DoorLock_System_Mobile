@@ -3,6 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Android/NFC/NFCapp/app/src/main/res/drawable/background1.xml" value="0.2265" />
+        <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Android/NFC/NFCapp/app/src/main/res/drawable/constraint_background.xml" value="0.2265" />
+        <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Android/NFC/NFCapp/app/src/main/res/drawable/datefield_background.xml" value="0.2265" />
+        <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Android/NFC/NFCapp/app/src/main/res/drawable/field_background.xml" value="0.2265" />
+        <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Android/NFC/NFCapp/app/src/main/res/drawable/ic_baseline_account_box_24.xml" value="0.2265" />
+        <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Android/NFC/NFCapp/app/src/main/res/drawable/ic_baseline_subdirectory_arrow_right_24.xml" value="0.2265" />
+        <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Android/NFC/NFCapp/app/src/main/res/layout/activity_main.xml" value="0.19746376811594202" />
+        <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Android/NFC/NFCapp/app/src/main/res/layout/calendar_page.xml" value="0.19746376811594202" />
+        <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Android/NFC/NFCapp/app/src/main/res/layout/main_page.xml" value="0.4" />
         <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Nfcapp/NFCapp/app/src/main/res/drawable-v24/ic_launcher_background.xml" value="0.2555" />
         <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Nfcapp/NFCapp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.4" />
         <entry key="..\:/DebreceniEgyetemTananygok/Szakdolgozat/Nfcapp/NFCapp/app/src/main/res/drawable/background1.xml" value="0.2545" />

@@ -51,12 +51,14 @@ public class CalendarpageActivity extends AppCompatActivity {
         myCalendarView = findViewById(R.id.myCalendar);
         refreshScrollViewButton = findViewById(R.id.refreshScrollViewBtn);
 
-        textViewParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        textViewParams.setMargins(20,10,20,10);
+        textViewParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        textViewParams.setMargins(25,10,15,10);
+        textViewParams.gravity = Gravity.CENTER_HORIZONTAL;
 
-        cardViewParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.CENTER_VERTICAL);
-        cardViewParams.setMargins(0,10,0,10);
+        cardViewParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        cardViewParams.setMargins(25,10,25,10);
 
+        @SuppressLint("SimpleDateFormat")
         String timeStamp = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         String[] date = timeStamp.split("-");
         processDate(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));

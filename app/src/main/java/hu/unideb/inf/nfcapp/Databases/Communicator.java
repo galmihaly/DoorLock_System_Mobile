@@ -11,7 +11,22 @@ public interface Communicator {
 
     String getLastLogoutDate();
 
-    String getLastPassedTime();
+    int getLastPassedTime();
+    /*-----*/
+    int getNumberOfLogin();
+
+    int getNumberOfPasswordLogin();
+
+    int getNumberOfNfcLogin();
+    /*-----*/
+
+    /*-----*/
+    int getNumberOfLogout();
+
+    int getNumberOfPasswordLogout();
+
+    int getNumberOfNfcLogout();
+    /*-----*/
 
     List<MyLog> getLogsbyDate(int i, int i2, int i3);
 
