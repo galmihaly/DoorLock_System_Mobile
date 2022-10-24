@@ -241,13 +241,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:text="Utolsó kilépés ideje:"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Utolsó kilépés óta eltelt idő:"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
                 <TextView
                     android:id="@+id/lastLoginDate"
@@ -266,13 +279,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:text="LogoutDate"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/textView5"
                     app:layout_constraintTop_toBottomOf="@+id/lastLoginDate" />
+
+                <TextView
+                    android:id="@+id/lastPassedTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:text="LogoutDate"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/textView4"
+                    app:layout_constraintTop_toBottomOf="@+id/lastLogoutDate" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -36,6 +36,7 @@ public class SqlDatabaseCommunicator implements Communicator {
     private final String _password = "Gm2022!!!";
 
     private String _lastLogoutDate = null;
+    private String _lastPassedTime = null;
     private String[] dates;
     private List<Integer> _gatePermissions;
 
@@ -232,6 +233,43 @@ public class SqlDatabaseCommunicator implements Communicator {
                 while (rs.next()) {
 
                     _lastLogoutDate = rs.getString(1);
+                    size++;
+                }
+
+                if (size == 0) {
+
+                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
+                    return null;
+                }
+
+                connection.close();
+            }
+        } catch (Exception e2) {
+            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
+            return null;
+        }
+
+        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
+        return _lastLogoutDate;
+    }
+
+    @Override // hu.unideb.inf.nfcapp.Databases.Communicator
+    public String getLastPassedTime() {
+
+        getConnection();
+        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return null;
+
+        try {
+            if (connection != null) {
+                query = "select DATEDIFF(HOUR, EntryDate, GETDATE()) from Log where Id = (select MAX(id) From Log where UserId = " + User._id + " and " +
+                        "(LogTypeId = " + LogTypeEnums.LOGOUT_CARD.getLevelCode() + " or LogTypeId = " + LogTypeEnums.LOGOUT_PASSWORD.getLevelCode() + "))";
+                stmt = connection.createStatement();
+                rs = stmt.executeQuery(query);
+                size = 0;
+
+                while (rs.next()) {
+
+                    _lastPassedTime = rs.getString(1);
                     size++;
                 }
 

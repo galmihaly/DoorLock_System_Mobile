@@ -104,4 +104,13 @@ public class Helper {
         }
         return false;
     }
+
+    public static String parseTimeToHoursAndDay(String lastPassedTime) {
+
+        int days = Integer.parseInt(lastPassedTime) / (60 * 24);
+        int hours = (days % (60 * 24)) / 60;
+        int minutes = (days % (60 * 24)) % 60;
+
+        return days + " nap " + hours + " óra " + minutes + " perc.";
+    }
 }

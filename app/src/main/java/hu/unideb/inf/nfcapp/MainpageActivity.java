@@ -2,7 +2,6 @@ package hu.unideb.inf.nfcapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -13,9 +12,6 @@ import hu.unideb.inf.nfcapp.Enums.SQLEnums;
 import hu.unideb.inf.nfcapp.Models.MyLog;
 import hu.unideb.inf.nfcapp.helpers.Helper;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 
@@ -24,6 +20,7 @@ public class MainpageActivity extends AppCompatActivity {
     private TextView loggedUsername = null;
     private TextView loggedAccountname = null;
     private TextView loggedUserAddress = null;
+    private TextView lastPassedTime = null;
     private final Repository repository = null;
     private TextView lastLoginDate;
     private TextView lastLogoutDate;
@@ -41,6 +38,7 @@ public class MainpageActivity extends AppCompatActivity {
         ImageButton calendarButton = (ImageButton) findViewById(R.id.calendarButton);
         lastLoginDate = (TextView) findViewById(R.id.lastLoginDate);
         lastLogoutDate = (TextView) findViewById(R.id.lastLogoutDate);
+        lastPassedTime = findViewById(R.id.lastPassedTime);
 
         Intent intent = getIntent();
         loggedUsername.setText(intent.getStringExtra("Username"));
@@ -48,7 +46,6 @@ public class MainpageActivity extends AppCompatActivity {
         loggedUserAddress.setText(intent.getStringExtra("Address"));
 
         getLastLogDate();
-
 
         Repository repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
 
@@ -77,6 +74,7 @@ public class MainpageActivity extends AppCompatActivity {
     }
 
     public void refreshStatisticsClicked(View view){
+
         getLastLogDate();
     }
 
@@ -96,6 +94,27 @@ public class MainpageActivity extends AppCompatActivity {
                 lastLoginDate.setText(_lastLoginDate);
                 lastLogoutDate.setText("Még nem jelentkezett\n ki!");
             }
+
+        } else if (!MyLog._myMessage.equals(SQLEnums.SQL_READING_FAILED)) {
+
+            if (MyLog._myMessage.equals(SQLEnums.SQL_CONNECTION_FAILED)) {
+                Toast.makeText(this, "Nem sikerült az adatbázishoz csatlakozni!", Toast.LENGTH_LONG).show();
+            }
+
+        } else {
+
+            lastLoginDate.setText("Nincs bejelentkezési adat!");
+        }
+    }
+
+    public void getLastPassedTime(){
+
+        Repository repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
+
+        String _lastPassedTime = repository.Communicator.getLastPassedTime();
+
+        if (_lastPassedTime != null) {
+            String resultTime = Helper.parseTimeToHoursAndDay(_lastPassedTime);
 
         } else if (!MyLog._myMessage.equals(SQLEnums.SQL_READING_FAILED)) {
 

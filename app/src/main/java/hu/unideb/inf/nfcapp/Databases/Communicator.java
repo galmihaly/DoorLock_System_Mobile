@@ -11,6 +11,8 @@ public interface Communicator {
 
     String getLastLogoutDate();
 
+    String getLastPassedTime();
+
     List<MyLog> getLogsbyDate(int i, int i2, int i3);
 
     Enum loginUser(String str, String str2);
