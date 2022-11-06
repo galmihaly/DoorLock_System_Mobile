@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">DoorLock System</string>
+    <string name="No_LogDate">Nincs bejelentkezési adat!</string>
+    <string name="No_PassedTime">Nincs eltelt idő!</string>
+    <string name="No_GatePermissions">Nincs kapuengedély!</string>
+    <string name="loginText">Bejelentkezés</string>
+    <string name="passwordText">Jelszó</string>
+    <string name="usernameText">Felhasználónév</string>
+    <string name="nothing">nothing</string>
+    <string name="statisticsText">Statisztika</string>
+    <string name="AddressText">Cím:</string>
+    <string name="textviewText">TextView</string>
+    <string name="loginPermissionText">Kapujogosultságok:</string>
+    <string name="username2Text">Felhasználónév:</string>
+    <string name="nameText">Név:</string>
+    <string name="lastLoginDateText">Utolsó belépés ideje:</string>
+    <string name="lastLogoutDateText">Utolsó kilépés ideje:</string>
+    <string name="lastPassedTimeText">Utolsó belépés óta eltelt idő:</string>
+    <string name="untilText">Eddig</string>
+    <string name="loginNumberText">alkalommal lépett be.</string>
+    <string name="logoutNumberText">alkalommal lépett ki.</string>
+    <string name="withPasswordText">Jelszóval:</string>
+    <string name="withNFCText">NFC kártyával:</string>
+    <string name="loginDateText">LoginDate</string>
+    <string name="logoutDateText">LogoutDate</string>
+    <string name="allLoginNumberText">num</string>
+    <string name="allLogoutNumberText">num</string>
+    <string name="allLoginNFCNumberText">nfc</string>
+    <string name="allLoginPasswordNumberText">pin</string>
+    <string name="loginsText">Belépések</string>
 </resources>

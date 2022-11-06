@@ -1,7 +1,6 @@
 package hu.unideb.inf.nfcapp.helpers;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,7 +21,8 @@ public class Helper {
                dates[0] = sb.append(year).append(separator).append("0").append(mounth).append(separator).append(dayOfMounth).toString();
                sb.setLength(0); // StringBuilder kiürítése
                dates[1] = sb.append(year).append(separator).append("0").append(mounth + 1).append(separator).append(firsDayOfMounth).toString();
-           } else {
+           }
+           else {
                dates[0] = sb.append(year).append(separator).append("0").append(mounth).append(separator).append(dayOfMounth).toString();
                sb.setLength(0); // StringBuilder kiürítése
                dates[1] = sb.append(year).append(separator).append("0").append(mounth).append(separator).append(dayOfMounth + 1).toString();
@@ -33,7 +33,8 @@ public class Helper {
                dates[0] = sb.append(year).append(separator).append(mounth).append(separator).append(dayOfMounth).toString();
                sb.setLength(0); // StringBuilder kiürítése
                dates[1] = sb.append(year).append(separator).append(mounth + 1).append(separator).append(firsDayOfMounth).toString();
-           } else {
+           }
+           else {
                dates[0] = sb.append(year).append(separator).append(mounth).append(separator).append(dayOfMounth).toString();
                sb.setLength(0); // StringBuilder kiürítése
                dates[1] = sb.append(year).append(separator).append(mounth).append(separator).append(dayOfMounth + 1).toString();
@@ -73,12 +74,12 @@ public class Helper {
 
         if(myLog._logTypeId == LogTypeEnums.LOGIN_CARD.getLevelCode()){
             return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: NFC kártya.\n")
-                     .append("Kilépés ideje:  nem történt kilépés!")
+                     .append("Kilépés ideje:  Nem történt kilépés!")
                      .toString();
         }
         else if(myLog._logTypeId == LogTypeEnums.LOGIN_PASSWORD.getLevelCode()){
             return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: Jelszó.\n")
-                     .append("Kilépés ideje:  nem történt kilépés!")
+                     .append("Kilépés ideje:  Nem történt kilépés!")
                      .toString();
         }
         return null;
@@ -105,12 +106,13 @@ public class Helper {
         return false;
     }
 
-    public static String parseTimeToHoursAndDay(int lastPassedTime) {
+    public static String parseTime(int lastPassedTime) {
 
-        int days = lastPassedTime / 1440;
+        int weeks = (lastPassedTime / 1440) / 7;
+        int days = (lastPassedTime / 1440) % 7;
         int hours = (lastPassedTime % 1440) / 60;
         int minutes = (lastPassedTime % 1440) % 60; // 1440 -> 60 * 24
 
-        return days + " nap " + hours + " óra " + minutes + " perc";
+        return weeks + " hét " + days + " nap " + hours + " óra " + minutes + " perc";
     }
 }

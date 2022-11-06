@@ -4,7 +4,7 @@ import android.os.StrictMode;
 import android.util.Log;
 
 import hu.unideb.inf.nfcapp.Enums.LogTypeEnums;
-import hu.unideb.inf.nfcapp.Enums.LoginTypeEnum;
+import hu.unideb.inf.nfcapp.Enums.LoginStatesEnum;
 import hu.unideb.inf.nfcapp.Enums.SQLEnums;
 import hu.unideb.inf.nfcapp.Models.MyLog;
 import hu.unideb.inf.nfcapp.Models.User;
@@ -21,11 +21,8 @@ import java.util.List;
 public class SqlDatabaseCommunicator implements Communicator {
 
     private Connection connection;
-    private MyLog myLog;
-    private List<MyLog> myLogs;
     private String query;
     private ResultSet rs;
-    private StringBuilder sb;
     private int size;
     private Statement stmt;
 
@@ -36,29 +33,29 @@ public class SqlDatabaseCommunicator implements Communicator {
     private final String _password = "Gm2022!!!";
 
     private String _lastLogoutDate = null;
-    private int _lastPassedTime = 0;
-    private int _numberOfPassword = 0;
-    private String[] dates;
+    private String _lastLoginDate = null;
+    private int result = 0;
+    private MyLog myLog;
+    private String[] datetime;
+    private List<MyLog> myLogs;
     private List<Integer> _gatePermissions;
 
-    @Override // hu.unideb.inf.nfcapp.Databases.Communicator
+    @Override
     public Enum loginUser(String username, String password) {
 
         getConnection();
-
         if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return null;
 
         try {
             if (connection != null) {
 
-                query = "SELECT [Id], [Name], [Address], [Account] FROM Users WHERE Account = '" + username + "' and " +
-                        "                                                           Password = '" + password + "'";
+                query = "SELECT [Id], [Name], [Address], [Account] FROM Users WHERE Account = '" + username + "' and " + "Password = '" + password + "'";
+
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(this.query);
                 size = 0;
 
                 while (rs.next()) {
-
                     User._id = rs.getInt(1);
                     User._name = rs.getString(2);
                     User._address = rs.getString(3);
@@ -68,7 +65,7 @@ public class SqlDatabaseCommunicator implements Communicator {
                 }
 
                 if (size == 0) {
-                    return LoginTypeEnum.LOGIN_FAILED;
+                    return LoginStatesEnum.LOGIN_FAILED;
                 }
 
                 connection.close();
@@ -77,27 +74,27 @@ public class SqlDatabaseCommunicator implements Communicator {
             return SQLEnums.SQL_READING_FAILED;
         }
 
-        return LoginTypeEnum.LOGIN_ACCESS;
+        return LoginStatesEnum.LOGIN_ACCESS;
     }
 
     @Override
-    public List<Integer> getGatePermissions() {
+    public List<Integer> getGatePermissionList() {
 
         _gatePermissions = new ArrayList<>();
-        getConnection();
 
+        getConnection();
         if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return null;
 
         try {
             if (connection != null) {
 
                 query = "SELECT GateId FROM UserGates WHERE UserId = '" + User._id + "'";
+
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(query);
                 size = 0;
 
                 while (rs.next()) {
-
                     _gatePermissions.add(rs.getInt(1));
                     size++;
                 }
@@ -110,7 +107,7 @@ public class SqlDatabaseCommunicator implements Communicator {
                 connection.close();
             }
         } catch (SQLException e) {
-            //Log.e("Hiba: ", e.getMessage());
+
             MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
             return null;
         }
@@ -119,25 +116,21 @@ public class SqlDatabaseCommunicator implements Communicator {
         return _gatePermissions;
     }
 
-    @Override // hu.unideb.inf.nfcapp.Databases.Communicator
+    @Override
     public List<MyLog> getLogsbyDate(int year, int mounth, int dayOfMounth) {
 
-        String[] datetime;
-        String[] seged;
-        myLogs = new ArrayList();
-        getConnection();
+        myLogs = new ArrayList<>();
 
+        getConnection();
         if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return null;
 
         try {
             if (connection != null) {
-                dates = Helper.getFormattedDate(year, mounth, dayOfMounth, '-');
-
-                Log.e("e:", String.valueOf(dates[0]));
-                Log.e("s:", String.valueOf(dates[1]));
+                String[] dates = Helper.getFormattedDate(year, mounth, dayOfMounth, '-');
 
                 query = "SELECT [UserId], [GateId], CONVERT(varchar, EntryDate, 120), [LogTypeId] FROM Log WHERE UserId = " + User._id + "and " +
-                                                                                                                "EntryDate >= '" + dates[0] + "' and EntryDate <= '" + dates[1] + "'";
+                        "EntryDate >= '" + dates[0] + "' and EntryDate <= '" + dates[1] + "'";
+
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(query);
                 size = 0;
@@ -148,11 +141,11 @@ public class SqlDatabaseCommunicator implements Communicator {
 
                     myLog._userId = rs.getInt(1);
                     myLog._gateId = rs.getInt(2);
-                    Log.e("c:", String.valueOf(rs.getInt(2)));
-                    datetime = rs.getString(3).split(" ");
 
+                    datetime = rs.getString(3).split(" ");
                     myLog._date = datetime[0];
                     myLog._time = datetime[1];
+
                     myLog._logTypeId = rs.getInt(4);
                     myLogs.add(myLog);
 
@@ -163,11 +156,9 @@ public class SqlDatabaseCommunicator implements Communicator {
                     MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
                     return null;
                 }
-
                 connection.close();
             }
         } catch (SQLException e) {
-            //Log.e("Hiba: ", e.getMessage());
             MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
             return null;
         }
@@ -176,21 +167,19 @@ public class SqlDatabaseCommunicator implements Communicator {
         return myLogs;
     }
 
-    @Override // hu.unideb.inf.nfcapp.Databases.Communicator
+    @Override
     public String getLastLoginDate() {
 
-        String _lastLoginDate = null;
-
         getConnection();
-
         if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return null;
 
         try {
             if (connection != null) {
 
                 query = "SELECT MAX(CONVERT(varchar, EntryDate, 120)) FROM Log where UserId = '" + User._id + "' and " +
-                                                                                    "LogTypeId = '" + LogTypeEnums.LOGIN_CARD.getLevelCode() + "' or " +
-                                                                                    "LogTypeId = '" + LogTypeEnums.LOGIN_PASSWORD.getLevelCode() + "'";
+                        "(LogTypeId = '" + LogTypeEnums.LOGIN_CARD.getLevelCode() + "' or " +
+                        "LogTypeId = '" + LogTypeEnums.LOGIN_PASSWORD.getLevelCode() + "')";
+
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(query);
                 size = 0;
@@ -204,7 +193,6 @@ public class SqlDatabaseCommunicator implements Communicator {
                     MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
                     return null;
                 }
-
                 connection.close();
             }
         } catch (Exception e2) {
@@ -216,7 +204,7 @@ public class SqlDatabaseCommunicator implements Communicator {
         return _lastLoginDate;
     }
 
-    @Override // hu.unideb.inf.nfcapp.Databases.Communicator
+    @Override
     public String getLastLogoutDate() {
 
         getConnection();
@@ -225,8 +213,9 @@ public class SqlDatabaseCommunicator implements Communicator {
         try {
             if (connection != null) {
                 query = "SELECT MAX(CONVERT(varchar, EntryDate, 120)) FROM Log where UserId = '" + User._id + "' and " +
-                                                                                    "LogTypeId = '" + LogTypeEnums.LOGOUT_CARD.getLevelCode() +"' or " +
-                                                                                    "LogTypeId = '" + LogTypeEnums.LOGOUT_PASSWORD.getLevelCode() + "'";
+                        "(LogTypeId = '" + LogTypeEnums.LOGOUT_CARD.getLevelCode() +"' or " +
+                        "LogTypeId = '" + LogTypeEnums.LOGOUT_PASSWORD.getLevelCode() + "')";
+
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(query);
                 size = 0;
@@ -242,7 +231,6 @@ public class SqlDatabaseCommunicator implements Communicator {
                     MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
                     return null;
                 }
-
                 connection.close();
             }
         } catch (Exception e2) {
@@ -254,33 +242,28 @@ public class SqlDatabaseCommunicator implements Communicator {
         return _lastLogoutDate;
     }
 
-    @Override // hu.unideb.inf.nfcapp.Databases.Communicator
-    public int getLastPassedTime() {
+    @Override
+    public int getStatistic(String command) {
 
         getConnection();
         if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
 
         try {
             if (connection != null) {
-                query = "select CONVERT(int, DATEDIFF(MINUTE, EntryDate, GETDATE())) from Log where Id = (select MAX(id) From Log where UserId = " + User._id + " and " +
-                        "(LogTypeId = " + LogTypeEnums.LOGOUT_CARD.getLevelCode() + " or LogTypeId = " + LogTypeEnums.LOGOUT_PASSWORD.getLevelCode() + "))";
+                query = command;
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(query);
                 size = 0;
 
                 while (rs.next()) {
-
-                    _lastPassedTime = rs.getInt(1);
-                    Log.e("pppppp", String.valueOf(_lastPassedTime));
+                    result = rs.getInt(1);
                     size++;
                 }
 
                 if (size == 0) {
-
                     MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
                     return 0;
                 }
-
                 connection.close();
             }
         } catch (Exception e2) {
@@ -289,228 +272,7 @@ public class SqlDatabaseCommunicator implements Communicator {
         }
 
         MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
-        return _lastPassedTime;
-    }
-
-    // hu.unideb.inf.nfcapp.Databases.Communicator
-    public int getNumberOfLogin() {
-
-        getConnection();
-        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
-
-        try {
-            if (connection != null) {
-                query = "select count(*) from Log where UserId = " + User._id + " and " +
-                        "(LogTypeId = " + LogTypeEnums.LOGIN_CARD.getLevelCode()+" or " +
-                        "LogTypeId = " + LogTypeEnums.LOGIN_PASSWORD.getLevelCode() + ")";
-                stmt = connection.createStatement();
-                rs = stmt.executeQuery(query);
-                size = 0;
-
-                while (rs.next()) {
-
-                    _numberOfPassword = rs.getInt(1);
-                    Log.e("pppppp", String.valueOf(_lastPassedTime));
-                    size++;
-                }
-
-                if (size == 0) {
-
-                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
-                    return 0;
-                }
-
-                connection.close();
-            }
-        } catch (Exception e2) {
-            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
-            return 0;
-        }
-
-        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
-        return _numberOfPassword;
-    }
-
-    public int getNumberOfPasswordLogin() {
-
-        getConnection();
-        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
-
-        try {
-            if (connection != null) {
-                query = "select count(*) from Log where UserId = " + User._id + " and LogTypeId = " + LogTypeEnums.LOGIN_PASSWORD.getLevelCode();
-                stmt = connection.createStatement();
-                rs = stmt.executeQuery(query);
-                size = 0;
-
-                while (rs.next()) {
-
-                    _numberOfPassword = rs.getInt(1);
-                    Log.e("pppppp", String.valueOf(_lastPassedTime));
-                    size++;
-                }
-
-                if (size == 0) {
-
-                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
-                    return 0;
-                }
-
-                connection.close();
-            }
-        } catch (Exception e2) {
-            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
-            return 0;
-        }
-
-        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
-        return _numberOfPassword;
-    }
-
-    public int getNumberOfNfcLogin() {
-
-        getConnection();
-        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
-
-        try {
-            if (connection != null) {
-                query = "select count(*) from Log where UserId = " + User._id + " and LogTypeId = " + LogTypeEnums.LOGIN_CARD.getLevelCode();
-                stmt = connection.createStatement();
-                rs = stmt.executeQuery(query);
-                size = 0;
-
-                while (rs.next()) {
-
-                    _numberOfPassword = rs.getInt(1);
-                    Log.e("pppppp", String.valueOf(_lastPassedTime));
-                    size++;
-                }
-
-                if (size == 0) {
-
-                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
-                    return 0;
-                }
-
-                connection.close();
-            }
-        } catch (Exception e2) {
-            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
-            return 0;
-        }
-
-        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
-        return _numberOfPassword;
-    }
-
-    public int getNumberOfLogout() {
-
-        getConnection();
-        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
-
-        try {
-            if (connection != null) {
-                query = "select count(*) from Log where UserId = " + User._id + " and " +
-                        "(LogTypeId = " + LogTypeEnums.LOGOUT_CARD.getLevelCode()+" or " +
-                        "LogTypeId = " + LogTypeEnums.LOGOUT_PASSWORD.getLevelCode() + ")";
-                stmt = connection.createStatement();
-                rs = stmt.executeQuery(query);
-                size = 0;
-
-                while (rs.next()) {
-
-                    _numberOfPassword = rs.getInt(1);
-                    Log.e("pppppp", String.valueOf(_lastPassedTime));
-                    size++;
-                }
-
-                if (size == 0) {
-
-                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
-                    return 0;
-                }
-
-                connection.close();
-            }
-        } catch (Exception e2) {
-            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
-            return 0;
-        }
-
-        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
-        return _numberOfPassword;
-    }
-
-    public int getNumberOfPasswordLogout() {
-
-        getConnection();
-        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
-
-        try {
-            if (connection != null) {
-                query = "select count(*) from Log where UserId = " + User._id + " and LogTypeId = " + LogTypeEnums.LOGOUT_PASSWORD.getLevelCode();
-                stmt = connection.createStatement();
-                rs = stmt.executeQuery(query);
-                size = 0;
-
-                while (rs.next()) {
-
-                    _numberOfPassword = rs.getInt(1);
-                    Log.e("pppppp", String.valueOf(_lastPassedTime));
-                    size++;
-                }
-
-                if (size == 0) {
-
-                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
-                    return 0;
-                }
-
-                connection.close();
-            }
-        } catch (Exception e2) {
-            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
-            return 0;
-        }
-
-        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
-        return _numberOfPassword;
-    }
-
-    public int getNumberOfNfcLogout() {
-
-        getConnection();
-        if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED) return 0;
-
-        try {
-            if (connection != null) {
-                query = "select count(*) from Log where UserId = " + User._id + " and LogTypeId = " + LogTypeEnums.LOGOUT_CARD.getLevelCode();
-                stmt = connection.createStatement();
-                rs = stmt.executeQuery(query);
-                size = 0;
-
-                while (rs.next()) {
-
-                    _numberOfPassword = rs.getInt(1);
-                    Log.e("pppppp", String.valueOf(_lastPassedTime));
-                    size++;
-                }
-
-                if (size == 0) {
-
-                    MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
-                    return 0;
-                }
-
-                connection.close();
-            }
-        } catch (Exception e2) {
-            MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
-            return 0;
-        }
-
-        MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;
-        return _numberOfPassword;
+        return result;
     }
 
     public void getConnection(){
@@ -520,7 +282,7 @@ public class SqlDatabaseCommunicator implements Communicator {
 
         try{
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
-            sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
             String connectionURL = sb.append("jdbc:jtds:sqlserver://")
                                      .append(_serverName)

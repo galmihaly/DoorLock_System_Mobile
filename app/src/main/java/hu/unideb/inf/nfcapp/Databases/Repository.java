@@ -12,9 +12,9 @@ public class Repository {
         TextFile
     }
 
-    public CommunicatorTypeEnum CommunicatorType = null;
-    public Communicator Communicator = null;
-    public User LoggedInUser = null;
+    public CommunicatorTypeEnum CommunicatorType;
+    public Communicator Communicator;
+    public User LoggedInUser;
 
     public Repository(CommunicatorTypeEnum enumType){
         this.CommunicatorType = enumType;

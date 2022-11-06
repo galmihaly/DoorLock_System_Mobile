@@ -17,16 +17,16 @@
         android:theme="@style/Theme.NFCapp"
         tools:targetApi="31">
 
-        <activity android:name=".MainpageActivity"
-            android:parentActivityName=".MainActivity"
+        <activity android:name=".StatisticsPageActivity"
+            android:parentActivityName=".LoginPageActivity"
             android:launchMode="singleTop"/>
 
-        <activity android:name=".CalendarpageActivity"
-            android:parentActivityName=".MainpageActivity"
+        <activity android:name=".CalendarPageActivity"
+            android:parentActivityName=".StatisticsPageActivity"
             android:launchMode="singleTop"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginPageActivity"
             android:exported="true"
             android:launchMode="singleTop">
             <intent-filter>

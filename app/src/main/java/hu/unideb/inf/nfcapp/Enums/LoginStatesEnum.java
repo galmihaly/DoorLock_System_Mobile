@@ -1,6 +1,6 @@
 package hu.unideb.inf.nfcapp.Enums;
 
-public enum LoginTypeEnum
+public enum LoginStatesEnum
 {
     LOGIN_ACCESS,
     LOGIN_FAILED

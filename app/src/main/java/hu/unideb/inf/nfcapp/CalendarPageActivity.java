@@ -8,12 +8,10 @@ import hu.unideb.inf.nfcapp.helpers.Helper;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CalendarView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,22 +21,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class CalendarpageActivity extends AppCompatActivity {
+public class CalendarPageActivity extends AppCompatActivity {
 
     private CalendarView myCalendarView;
-    private List<MyLog> myLogs;
-    private Repository repository;
     private LinearLayout myLinearLayout;
-    private ImageButton refreshScrollViewButton;
     private LayoutParams textViewParams;
     private LayoutParams cardViewParams;
-    private CardView myCardView;
-    private TextView myTextView;
-    private String setText;
+
     private int year1;
     private int mounth1;
     private int dayOfMounth1;
@@ -47,9 +39,9 @@ public class CalendarpageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.calendar_page);
+
         myLinearLayout = findViewById(R.id.eventsLinearLayout);
         myCalendarView = findViewById(R.id.myCalendar);
-        refreshScrollViewButton = findViewById(R.id.refreshScrollViewBtn);
 
         textViewParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         textViewParams.setMargins(25,10,15,10);
@@ -83,31 +75,33 @@ public class CalendarpageActivity extends AppCompatActivity {
 
     private void processDate(int year, int mounth, int dayOfMounth){
 
-        repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
-        myLogs = new ArrayList<>();
-        Log.e("k:", year + " " + mounth + " " + dayOfMounth );
-        myLogs = repository.Communicator.getLogsbyDate(year, mounth, dayOfMounth);
+        Repository repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
+
+        List<MyLog> myLogs = repository.Communicator.getLogsbyDate(year, mounth, dayOfMounth);
 
         if(MyLog._myMessage == SQLEnums.SQL_READING_SUCCES){
 
             myLinearLayout.removeAllViews();
             addDateListToTextbox(myLogs);
-            Toast.makeText(CalendarpageActivity.this, "Sikeres!", Toast.LENGTH_LONG).show();
+            Toast.makeText(CalendarPageActivity.this, "Sikeres!", Toast.LENGTH_LONG).show();
         }
         else if(MyLog._myMessage == SQLEnums.SQL_NO_EVENTS){
             myLinearLayout.removeAllViews();
-            Toast.makeText(CalendarpageActivity.this, "Ezen a napon nem történt belépés!", Toast.LENGTH_LONG).show();
+            Toast.makeText(CalendarPageActivity.this, "Ezen a napon nem történt belépés!", Toast.LENGTH_LONG).show();
         }
         else if(MyLog._myMessage == SQLEnums.SQL_READING_FAILED){
-            Toast.makeText(CalendarpageActivity.this, "Nem sikerült az adatbázisból olvasni", Toast.LENGTH_LONG).show();
+            Toast.makeText(CalendarPageActivity.this, "Nem sikerült az adatbázisból olvasni", Toast.LENGTH_LONG).show();
         }
         else if(MyLog._myMessage == SQLEnums.SQL_CONNECTION_FAILED){
-            Toast.makeText(CalendarpageActivity.this, "Nem sikerült az adatbázishoz csatlakozni!", Toast.LENGTH_LONG).show();
+            Toast.makeText(CalendarPageActivity.this, "Nem sikerült az adatbázishoz csatlakozni!", Toast.LENGTH_LONG).show();
         }
     }
 
     private void addDateListToTextbox(List<MyLog> myLogs) {
 
+        CardView myCardView;
+        TextView myTextView;
+        String setText;
         if(myLogs.size() % 2 == 0){
             for (int i  = 0; i < myLogs.size(); i += 2){
                 setText = Helper.getCardLogTextSucces(myLogs.get(i), myLogs.get(i + 1));
@@ -125,7 +119,6 @@ public class CalendarpageActivity extends AppCompatActivity {
                 if(setText != null) myTextView.setText(setText);
 
                 myCardView.addView(myTextView);
-
                 myLinearLayout.addView(myCardView);
             }
         }
@@ -145,15 +138,12 @@ public class CalendarpageActivity extends AppCompatActivity {
                     setText = Helper.getCardLogTextFailed(myLogs.get(k));
                     myCardView.setCardBackgroundColor(Color.rgb(229,45,33));
 
-                    if(setText != null) myTextView.setText(setText);
-
                 } else {
                     setText = Helper.getCardLogTextSucces(myLogs.get(k), myLogs.get(k + 1));
                     myCardView.setCardBackgroundColor(Color.rgb(42,150,42));
 
-                    if(setText != null) myTextView.setText(setText);
-
                 }
+                if(setText != null) myTextView.setText(setText);
                 myCardView.addView(myTextView);
                 myLinearLayout.addView(myCardView);
             }
