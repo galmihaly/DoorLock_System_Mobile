@@ -4,6 +4,9 @@ import hu.unideb.inf.nfcapp.Databases.Repository;
 import hu.unideb.inf.nfcapp.Enums.LoginStatesEnum;
 import hu.unideb.inf.nfcapp.Enums.SQLEnums;
 import hu.unideb.inf.nfcapp.Models.User;
+import hu.unideb.inf.nfcapp.databinding.LoginPageBinding;
+import hu.unideb.inf.nfcapp.databinding.StatisticsPageBinding;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -19,10 +22,15 @@ public class LoginPageActivity extends AppCompatActivity {
     private EditText textUsername;
     private Enum isLoginTypeEnum = null;
 
+    private LoginPageBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_page);
+        //setContentView(R.layout.login_page);
+
+        binding = LoginPageBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         textUsername = findViewById(R.id.textUsername);
         textPassword = findViewById(R.id.textPassword);

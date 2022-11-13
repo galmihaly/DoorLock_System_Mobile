@@ -28,4 +28,5 @@
     <string name="allLoginNFCNumberText">nfc</string>
     <string name="allLoginPasswordNumberText">pin</string>
     <string name="loginsText">Belépések</string>
+    <string name="refresh">Frissítés...</string>
 </resources>
