@@ -14,8 +14,6 @@ import android.os.Looper;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.CalendarView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
@@ -31,8 +29,6 @@ import java.util.concurrent.Executors;
 
 public class CalendarPageActivity extends AppCompatActivity {
 
-    private CalendarView myCalendarView = null;
-    private LinearLayout eventsLinearLayout = null;
     private LayoutParams textViewParams = null;
     private LayoutParams cardViewParams = null;
 
@@ -42,8 +38,8 @@ public class CalendarPageActivity extends AppCompatActivity {
     private int mounth1;
     private int dayOfMounth1;
 
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,9 +135,7 @@ public class CalendarPageActivity extends AppCompatActivity {
 
                     final CardView resultCardView = myCardView;
 
-                    handler.post(() -> {
-                        binding.eventsLinearLayout.addView(resultCardView);
-                    });
+                    handler.post(() -> binding.eventsLinearLayout.addView(resultCardView));
                 }
             }
             else{
@@ -170,9 +164,7 @@ public class CalendarPageActivity extends AppCompatActivity {
 
                     final CardView resultCardView = myCardView;
 
-                    handler.post(() -> {
-                        binding.eventsLinearLayout.addView(resultCardView);
-                    });
+                    handler.post(() -> binding.eventsLinearLayout.addView(resultCardView));
                 }
             }
         });

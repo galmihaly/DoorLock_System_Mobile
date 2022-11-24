@@ -47,23 +47,23 @@ public class Helper {
         StringBuilder sb = new StringBuilder();
 
         if(myLog._logTypeId == LogTypeEnums.LOGIN_CARD.getLevelCode() && myLog1._logTypeId == LogTypeEnums.LOGOUT_CARD.getLevelCode()){
-            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: NFC kártya.\n")
-                     .append("Kilépés ideje:  ").append(myLog1._time).append(", Kapu: ").append(myLog1._gateId).append(", Típus: NFC kártya.")
+            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: Ön NFC kártyával lépett be.\n")
+                     .append("Kilépés ideje:  ").append(myLog1._time).append(", Kapu: ").append(myLog1._gateId).append(", Típus: Ön NFC kártyával lépett be.")
                      .toString();
         }
         else if(myLog._logTypeId == LogTypeEnums.LOGIN_CARD.getLevelCode() && myLog1._logTypeId == LogTypeEnums.LOGOUT_PASSWORD.getLevelCode()){
-            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: NFC kártya.\n")
-                     .append("Kilépés ideje:  ").append(myLog1._time).append(", Kapu: ").append(myLog1._gateId).append(", Típus: Jelszó.")
+            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: Ön NFC kártyával lépett be.\n")
+                     .append("Kilépés ideje:  ").append(myLog1._time).append(", Kapu: ").append(myLog1._gateId).append(", Típus: Ön jelszóval lépett be.")
                      .toString();
         }
         else if(myLog._logTypeId == LogTypeEnums.LOGIN_PASSWORD.getLevelCode() && myLog1._logTypeId == LogTypeEnums.LOGOUT_CARD.getLevelCode()){
-            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: Jelszó.\n")
-                     .append("Kilépés ideje:  ").append(myLog1._time).append(", Kapu: ").append(myLog1._gateId).append(", Típus: NFC kártya.")
+            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: Ön jelszóval lépett be.\n")
+                     .append("Kilépés ideje:  ").append(myLog1._time).append(", Kapu: ").append(myLog1._gateId).append(", Típus: Ön NFC kártyával lépett be.")
                      .toString();
         }
         else if(myLog._logTypeId == LogTypeEnums.LOGIN_PASSWORD.getLevelCode() && myLog1._logTypeId == LogTypeEnums.LOGOUT_PASSWORD.getLevelCode()){
-            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: Jelszó.\n")
-                     .append("Kilépés ideje:  ").append(myLog1._time).append(", Kapu: ").append(myLog1._gateId).append(", Típus: Jelszó.")
+            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: Ön jelszóval lépett be.\n")
+                     .append("Kilépés ideje:  ").append(myLog1._time).append(", Kapu: ").append(myLog1._gateId).append(", Típus: Ön jelszóval lépett be.")
                      .toString();
         }
         return null;
@@ -73,12 +73,12 @@ public class Helper {
         StringBuilder sb = new StringBuilder();
 
         if(myLog._logTypeId == LogTypeEnums.LOGIN_CARD.getLevelCode()){
-            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: NFC kártya.\n")
+            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: Ön NFC kártyával lépett be.\n")
                      .append("Kilépés ideje:  Nem történt kilépés!")
                      .toString();
         }
         else if(myLog._logTypeId == LogTypeEnums.LOGIN_PASSWORD.getLevelCode()){
-            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: Jelszó.\n")
+            return sb.append("Belépés ideje: ").append(myLog._time).append(", Kapu: ").append(myLog._gateId).append(", Típus: Ön jelszóval lépett be.\n")
                      .append("Kilépés ideje:  Nem történt kilépés!")
                      .toString();
         }

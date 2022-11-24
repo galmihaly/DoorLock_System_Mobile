@@ -1,12 +1,11 @@
 package hu.unideb.inf.nfcapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,31 +25,15 @@ import hu.unideb.inf.nfcapp.helpers.Helper;
 
 public class StatisticsPageActivity extends AppCompatActivity {
 
-    private TextView loggedUsername = null;
-    private TextView loggedAccountname = null;
-    private TextView loggedUserAddress = null;
-    private TextView lastPassedTime = null;
-    private TextView numberOfLogin = null;
-    private TextView numberOfPasswordLogin = null;
-    private TextView numberOfNfcLogin = null;
-    private TextView numberOfLogout = null;
-    private TextView numberOfPasswordLogout = null;
-    private TextView numberOfNfcLogout = null;
-    private TextView loggedGateIDs = null;
-    private TextView lastLoginDate;
-    private TextView lastLogoutDate;
-
+    private final StringBuilder sb = new StringBuilder();
     private StatisticsPageBinding binding = null;
 
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-    private Handler handler = new Handler(Looper.getMainLooper());
-
-    private final StringBuilder sb = new StringBuilder();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.statistics_page);
 
         binding = StatisticsPageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -117,7 +100,7 @@ public class StatisticsPageActivity extends AppCompatActivity {
                     .append(" or LogTypeId = ").append(LogTypeEnums.LOGOUT_PASSWORD.getLevelCode()).append("))")
                     .toString();
 
-            String _lastPassedTime = Helper.parseTime(repository.Communicator.getStatistic(command));
+            int _lastPassedTime = repository.Communicator.getStatistic(command);
             sb.setLength(0);
 
             command = sb.append("select count(*) from Log where UserId = ").append(User._id)
@@ -164,21 +147,41 @@ public class StatisticsPageActivity extends AppCompatActivity {
             int _numberOfNfcLogout = repository.Communicator.getStatistic(command);
             sb.setLength(0);
 
-            final String final_lastPassedTime = _lastPassedTime;
+            command = sb.append("select Active from Users where Id = ").append(User._id).toString();
+
+            int _userState = repository.Communicator.getStatistic(command);
+            sb.setLength(0);
+
+            final int final_lastPassedTime = _lastPassedTime;
             final int final_numberOfLogin = _numberOfLogin;
             final int final_numberOfPasswordLogin = _numberOfPasswordLogin;
             final int final_numberOfNfcLogin = _numberOfNfcLogin;
             final int final_numberOfLogout = _numberOfLogout;
             final int final_numberOfPasswordLogout = _numberOfPasswordLogout;
             final int final_numberOfNfcLogout = _numberOfNfcLogout;
+            final int final_userState = _userState;
 
             handler.post(() -> {
                 if (MyLog._myMessage.equals(SQLEnums.SQL_READING_SUCCES)) {
 
-                    binding.lastPassedTime.setText(final_lastPassedTime);
+                    if(final_lastPassedTime != -1){
+                        binding.lastPassedTime.setText( Helper.parseTime(final_lastPassedTime));
+                    }
+                    else {
+                        Toast.makeText(this, "Nem található olvasott adat!", Toast.LENGTH_LONG).show();
+                    }
 
-                    if (   _numberOfLogin != 0 || _numberOfPasswordLogin != 0 || _numberOfNfcLogin != 0 ||
-                            _numberOfPasswordLogout != 0 || _numberOfNfcLogout != 0    ) {
+                    if(final_userState == 1){
+                        binding.userStateTextField.setTextColor(Color.rgb(0, 128, 0));
+                        binding.userStateTextField.setText(R.string.activeState);
+                    }
+                    else{
+                        binding.userStateTextField.setTextColor(Color.rgb(255, 0, 0));
+                        binding.userStateTextField.setText(R.string.inActiveState);
+                    }
+
+                    if (   _numberOfLogin != -1 || _numberOfPasswordLogin != -1 || _numberOfNfcLogin != -1 ||
+                            _numberOfPasswordLogout != -1 || _numberOfNfcLogout != -1    ) {
 
                         binding.numberofLogin.setText(String.valueOf(final_numberOfLogin));
                         binding.numberofPasswordLogin.setText(String.valueOf(final_numberOfPasswordLogin));
@@ -197,8 +200,6 @@ public class StatisticsPageActivity extends AppCompatActivity {
                 }
                 else if (MyLog._myMessage.equals(SQLEnums.SQL_NO_EVENTS)) {
 
-                    binding.lastPassedTime.setText("0");
-
                     binding.numberofLogin.setText("0");
                     binding.numberofPasswordLogin.setText("0");
                     binding.numberofNfcLogin.setText("0");
@@ -216,7 +217,7 @@ public class StatisticsPageActivity extends AppCompatActivity {
         executor.execute(() -> {
 
             Repository repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
-            final List<Integer> gatePermissions = repository.Communicator.getGatePermissionList();
+            final List<String> gatePermissions = repository.Communicator.getGatePermissionList();
 
             handler.post(() -> {
 
@@ -251,9 +252,11 @@ public class StatisticsPageActivity extends AppCompatActivity {
     }
 
     public void logOutButtonClicked(View view) {
-        loggedUsername.setText(null);
-        loggedAccountname.setText(null);
-        loggedUserAddress.setText(null);
+        binding.loggedUsername.setText(null);
+        binding.loggedAccountname.setText(null);
+        binding.loggedUserAddress.setText(null);
+        binding.loggedGateIDs.setText(null);
+        binding.userStateTextField.setText(null);
         finish();
     }
 

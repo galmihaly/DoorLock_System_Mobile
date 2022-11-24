@@ -5,7 +5,6 @@ import hu.unideb.inf.nfcapp.Enums.LoginStatesEnum;
 import hu.unideb.inf.nfcapp.Enums.SQLEnums;
 import hu.unideb.inf.nfcapp.Models.User;
 import hu.unideb.inf.nfcapp.databinding.LoginPageBinding;
-import hu.unideb.inf.nfcapp.databinding.StatisticsPageBinding;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,14 +19,13 @@ public class LoginPageActivity extends AppCompatActivity {
 
     private EditText textPassword;
     private EditText textUsername;
-    private Enum isLoginTypeEnum = null;
+    private Enum isLoginTypeEnum;
 
     private LoginPageBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.login_page);
 
         binding = LoginPageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -41,7 +39,7 @@ public class LoginPageActivity extends AppCompatActivity {
 
         Repository repository = new Repository(Repository.CommunicatorTypeEnum.MsSqlServer);
         if(repository.Communicator == null){
-            Toast.makeText(LoginPageActivity.this, "Nem sikerült csatlakozni az adatbázishoz !!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginPageActivity.this, "Nem sikerült csatlakozni az adatbázishoz!", Toast.LENGTH_SHORT).show();
         }
 
        if(!(textPassword.getText().toString().isEmpty()) && !(textUsername.getText().toString().isEmpty())){

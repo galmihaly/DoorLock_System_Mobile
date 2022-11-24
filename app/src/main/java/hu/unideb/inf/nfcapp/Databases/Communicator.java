@@ -15,6 +15,6 @@ public interface Communicator {
 
     Enum loginUser(String str, String str2);
 
-    List<Integer> getGatePermissionList();
+    List<String> getGatePermissionList();
 
 }

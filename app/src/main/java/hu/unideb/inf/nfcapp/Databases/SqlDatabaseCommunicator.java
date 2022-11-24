@@ -38,7 +38,7 @@ public class SqlDatabaseCommunicator implements Communicator {
     private MyLog myLog;
     private String[] datetime;
     private List<MyLog> myLogs;
-    private List<Integer> _gatePermissions;
+    private List<String> _gatePermissions;
 
     @Override
     public Enum loginUser(String username, String password) {
@@ -78,7 +78,7 @@ public class SqlDatabaseCommunicator implements Communicator {
     }
 
     @Override
-    public List<Integer> getGatePermissionList() {
+    public List<String> getGatePermissionList() {
 
         _gatePermissions = new ArrayList<>();
 
@@ -88,14 +88,14 @@ public class SqlDatabaseCommunicator implements Communicator {
         try {
             if (connection != null) {
 
-                query = "SELECT GateId FROM UserGates WHERE UserId = '" + User._id + "'";
+                query = "SELECT G.GateId from Gates G INNER JOIN UserGates UG ON G.Id = UG.GateId where UG.UserId = '" + User._id +"'";
 
                 stmt = connection.createStatement();
                 rs = stmt.executeQuery(query);
                 size = 0;
 
                 while (rs.next()) {
-                    _gatePermissions.add(rs.getInt(1));
+                    _gatePermissions.add(rs.getString(1));
                     size++;
                 }
 
@@ -140,7 +140,7 @@ public class SqlDatabaseCommunicator implements Communicator {
                     myLog = new MyLog();
 
                     myLog._userId = rs.getInt(1);
-                    myLog._gateId = rs.getInt(2);
+                    myLog._gateId = rs.getString(2);
 
                     datetime = rs.getString(3).split(" ");
                     myLog._date = datetime[0];
@@ -262,13 +262,13 @@ public class SqlDatabaseCommunicator implements Communicator {
 
                 if (size == 0) {
                     MyLog._myMessage = SQLEnums.SQL_NO_EVENTS;
-                    return 0;
+                    return -1;
                 }
                 connection.close();
             }
         } catch (Exception e2) {
             MyLog._myMessage = SQLEnums.SQL_READING_FAILED;
-            return 0;
+            return -1;
         }
 
         MyLog._myMessage = SQLEnums.SQL_READING_SUCCES;

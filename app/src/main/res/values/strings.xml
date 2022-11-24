@@ -29,4 +29,7 @@
     <string name="allLoginPasswordNumberText">pin</string>
     <string name="loginsText">Belépések</string>
     <string name="refresh">Frissítés...</string>
+    <string name="state">Státusz:</string>
+    <string name="activeState">aktív</string>
+    <string name="inActiveState">inaktív</string>
 </resources>
