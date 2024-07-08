@@ -42,7 +42,8 @@
   - jelenlegi státuszát (aktív/inaktív státusza van-e az adatbázisban vagy sem)
   - utolsó belépés és kilépés dátumát
   - első regisztrációja óta mennyi alkalommal használta az eszköz PIN kódos, vagy RFID kártyás belépési módot.
-- A frissítés gombbal ismét lekérdezi az adatbázis tartalmát és frissíti a felületen található adatokat.
+- A frissítés gombbal (átettsző gomb, kék színű ikon) ismét lekérdezi az adatbázis tartalmát és frissíti a felületen található adatokat.
+- A kijelentkezés gombbal (piros gomb, fehér színű ikon) ki tudunk jelentkezni az alkalmazásból.
 - Ezt követően a Statisztika oldalon található naptár gombbal tovább tudunk menni a <b>Belépések</b> felületre, ahol napi szintre lebontva tudjuk megtekinteni a be és kilépéseinket.
 - A frissítés gomb ezen a felületen is ugyanúgy működik, mint a Statisztika oldalon található frissítés gomb.
 
